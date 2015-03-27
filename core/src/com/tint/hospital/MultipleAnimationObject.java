@@ -1,0 +1,51 @@
+package com.tint.hospital;
+
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
+
+public class MultipleAnimationObject implements RenderObject {
+
+	private Transform transform;
+	private Animation baseAnimation;
+	private Animation currentAnimation;
+	private float animationTime;
+
+	/**
+	 * Lets you play animations and make the object return to
+	 * its base animation when done.
+	 * @param baseAnimation
+	 */
+	public MultipleAnimationObject(Transform transform, Animation baseAnimation) {
+		this.transform = transform;
+		this.baseAnimation = baseAnimation;
+	}
+	
+	@Override
+	public void render(SpriteBatch batch) {
+		animationTime += Root.INSTANCE.renderSystem.getFrameDelta();
+		
+		if(currentAnimation != null && currentAnimation.getPlayMode() == PlayMode.NORMAL) {
+			if(currentAnimation.isAnimationFinished(animationTime))
+				currentAnimation = null;
+		}
+		
+		TextureRegion frame = null;
+		if(currentAnimation != null) 
+			frame = currentAnimation.getKeyFrame(animationTime);
+		else
+			frame = baseAnimation.getKeyFrame(animationTime);
+		
+		
+		batch.draw(frame, transform.getX(), transform.getY());
+	}
+	
+	/**
+	 * @param animation Can be null to stop animation
+	 */
+	public void playAnimation(Animation animation) {
+		currentAnimation = animation;
+		animationTime = 0;
+	}
+}
