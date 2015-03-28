@@ -8,13 +8,15 @@ public class TextureObject implements RenderObject {
 	private TextureRegion textureRegion;
 	private Transform transform;
 	
-	public TextureObject(TextureRegion textureRegion) {
+	public TextureObject(TextureRegion textureRegion, float x, float y) {
 		this.textureRegion = textureRegion;
+		transform = new Transform();
+		transform.setX(x);
+		transform.setY(y);
 	}
 
 	@Override
 	public void render(SpriteBatch batch) {
 		batch.draw(textureRegion, transform.getX(), transform.getY());
 	}
-
 }

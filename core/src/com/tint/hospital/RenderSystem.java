@@ -17,6 +17,15 @@ public class RenderSystem {
 		private void add(RenderObject renderObject) {
 			renderObjects.add(renderObject);
 		}
+		
+		private void remove(RenderObject renderObject) {
+			for(RenderObject ro : renderObjects) {
+				if(ro.equals(renderObject)) {
+					renderObjects.remove(ro);
+					break;
+				}
+			}
+		}
 	}
 
 	private RenderLayer[] renderLayers;
@@ -40,6 +49,13 @@ public class RenderSystem {
 			throw new IllegalArgumentException("Layer Index is out of range");
 		
 		renderLayers[layerIndex].add(renderObject);
+	}
+	
+	public void removeObject(RenderObject renderObject, int layerIndex) {
+		if(layerIndex < 0 || layerIndex >= LAYER_AMOUNT)
+			throw new IllegalArgumentException("Layer Index is out of range");
+			
+		renderLayers[layerIndex].remove(renderObject);
 	}
 
 	public float getFrameDelta() {
