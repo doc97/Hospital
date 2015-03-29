@@ -1,0 +1,1 @@
+// filename, frame width, frame height, first x, first y, last x, last y, frame time (seconds)

@@ -1,5 +1,7 @@
 package com.tint.hospital;
 
+import java.io.IOException;
+
 import com.tint.hospital.rooms.ExaminationRoom;
 import com.tint.hospital.rooms.Room;
 import com.tint.hospital.rooms.WaitingRoom;
@@ -11,46 +13,47 @@ public class ConstructionSystem {
 	private RenderObject renderObject;
 	
 	public void create() {
-		LoggingSystem.log("Construction System", "loading...", false);
+		LoggingSystem.log("Construction System", "loading...");
 		currentObject = new ConstructionObject();
 		renderObject = new TextureObject(null, 0, 0);
 		
 		// Loading templates from file
-		String file = FileUtils.readFromFile("data/construction_objects.txt");
-		String[] obj = file.split("/n");
-		objects = new ConstructionObject[obj.length];
-		for(int i = 0; i < obj.length; i++) {
-			// Comments
-			if(obj[i].startsWith("//"))
-				continue;
-			
-			String[] data = obj[i].split(",");
-			objects[i] = new ConstructionObject();
-			objects[i].set(Integer.valueOf(data[0]), Integer.valueOf(data[1]), Integer.valueOf(data[2]));
+		String file;
+		try {
+			file = FileUtils.readFromFile("data/construction_objects.txt");
+			String[] obj = file.split("/n");
+			objects = new ConstructionObject[obj.length];
+			for(int i = 0; i < obj.length; i++) {
+				// Comments
+				if(obj[i].startsWith("//"))
+					continue;
+				
+				String[] data = obj[i].split(",");
+				objects[i] = new ConstructionObject();
+				objects[i].set(Integer.valueOf(data[0]), Integer.valueOf(data[1]), Integer.valueOf(data[2]));
+			}
+			LoggingSystem.log("Construction System", "Done!");
+		} catch (IOException e) {
+			LoggingSystem.error("Construction System", "Couldn't load construction objects");
+			e.printStackTrace();
 		}
-		LoggingSystem.log("Construction System", "Done!", false);
+		
+		
 	}
 	
 	public void build() {
 		if(currentObject.getID() > -1) {
 			// Checking if intersecting with any other rooms
-			for(Room b : Root.INSTANCE.rooms) {
-				if((currentObject.getX() <= b.getX() + b.getWidth() &&
-					currentObject.getX() + currentObject.getWidth() >= b.getX()) &&
-					(currentObject.getY() <= b.getY() + b.getHeight() &&
-					currentObject.getY() + currentObject.getHeight() >= b.getY())) {
-					return;
-				}
+			if(isAvailable(currentObject.getX(), currentObject.getY(), currentObject.getWidth(), currentObject.getHeight())) {
+				// Remove 'ghost room' and add a real room
+				Root.INSTANCE.renderSystem.removeObject(renderObject, 4);
+				Root.INSTANCE.building.addRoom(getRoom(currentObject));
+				LoggingSystem.log("Construction System", "Constructed room with id: " + currentObject.getID());
+				
+				// Reset objects
+				renderObject = new TextureObject(null, 0, 0);
+				currentObject = new ConstructionObject();
 			}
-			
-			// Remove 'ghost room' and add a real room
-			Root.INSTANCE.renderSystem.removeObject(renderObject, 4);
-			Root.INSTANCE.addRoom(getRoom(currentObject));
-			LoggingSystem.log("Construction System", "Constructed room with id: " + currentObject.getID(), false);
-			
-			// Reset objects
-			renderObject = new TextureObject(null, 0, 0);
-			currentObject = new ConstructionObject();
 		}
 	}
 	
@@ -64,7 +67,8 @@ public class ConstructionSystem {
 			currentObject.setPosition(currentObject.getX() + 100 * index, currentObject.getY() + index * 100);
 			
 			// Create a ghost and add it to render system
-			renderObject = new TextureObject(getRoom(currentObject).getTexture(), currentObject.getX(), currentObject.getY());
+			// TODO Change to custom render object
+			renderObject = getRoom(currentObject).getRenderObject();
 			Root.INSTANCE.renderSystem.addObject(renderObject, 4);
 		}
 	}
@@ -86,5 +90,16 @@ public class ConstructionSystem {
 				System.err.println("[Construction System]: cannot build room with id: " + object.getID());
 				return null;
 		}
+	}
+	
+	public boolean isAvailable(int x, int y, int width, int height) {
+		for(int i = x; i < width; i++) {
+			for(int j = y; j < height; j++) {
+				if(Root.INSTANCE.building.getRoomAt(i, j) != null) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }

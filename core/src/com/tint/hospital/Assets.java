@@ -1,36 +1,54 @@
 package com.tint.hospital;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
-
-/**
-*
-* @author Daniel Riissanen
-*
-*/
 
 public class Assets {
 
 	private static Map<String, Animation> animations = new HashMap<String, Animation>();
 	private static Map<String, TextureRegion> textures = new HashMap<String, TextureRegion>();
-	private static String[] keys = { "Examination Room", "Waiting Room" };
 
 	public static void loadGraphics() {
 		TextureAtlas ta = new TextureAtlas(Gdx.files.internal("graphics/packed/Hospital.atlas"));
-		textures.put(keys[0], ta.findRegion("examination_room"));
-		textures.put(keys[1], ta.findRegion("waiting_room"));
 		
-		for(int i = 0; i < keys.length; i++) {
-			if(textures.get(keys[i]) == null)
-				LoggingSystem.log("Assets", "Failed to load texture: " + keys[i], true);
-			else if(i == keys.length - 1)
-				LoggingSystem.log("Assets", "Graphics loaded", false);
+		for(AtlasRegion region : ta.getRegions()) {
+			// Load textures only
+			if(!(region.name).contains("anim"))
+				textures.put(region.name, region);
+		}
+		LoggingSystem.log("Assets", "Textures loaded");
+		
+		// Load animations
+		try {
+			String[] animData = FileUtils.readFromFile("data/animations.txt").split("/n");
+			for(String anim : animData) {
+				if(anim.startsWith("//"))
+					continue;
+				
+				String[] data = anim.split(",");
+				String name = data[0];
+				int frameWidth = Integer.valueOf(data[1]);
+				int frameHeight = Integer.valueOf(data[2]);
+				int firstX = Integer.valueOf(data[3]);
+				int firstY = Integer.valueOf(data[4]);
+				int lastX = Integer.valueOf(data[5]);
+				int lastY = Integer.valueOf(data[6]);
+				float frameTime = Float.valueOf(data[7]);
+				
+				animations.put(name, loadAnimation(ta.findRegion(name), frameWidth, frameHeight, frameTime, firstX, firstY, lastX, lastY));
+			}
+			LoggingSystem.log("Assets", "Animations loaded");
+		} catch (IOException e) {
+			LoggingSystem.error("Assets", "Animations not loaded");
+			e.printStackTrace();
 		}
 	}
 
@@ -39,7 +57,7 @@ public class Assets {
 	 * @param texture - The texture containing all frames
 	 * @param spriteWidth - The width of the frame
 	 * @param spriteHeight - The height of the frame
-	 * @param frameTime - The duration every frame will be showed
+	 * @param frameTime - The duration every frame will be showed (in seconds)
 	 * @param firstX - The first frames x coordianate
 	 * @param firstY - The first frames y coordianate
 	 * @param lastX - The last frames x coordianate

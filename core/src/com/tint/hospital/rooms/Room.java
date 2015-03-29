@@ -1,12 +1,12 @@
 package com.tint.hospital.rooms;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.tint.hospital.RenderObject;
 
 public abstract class Room {
 
 	public int x, y;
 	public int width, height;
-	protected TextureRegion region;
+	protected RenderObject renderObject;
 	
 	public Room(int x, int y, int width, int height) {
 		this.x = x;
@@ -15,6 +15,5 @@ public abstract class Room {
 		this.height = height;
 	}
 	
-	public void setTexture(TextureRegion region) { this.region = region; }
-	public TextureRegion getTexture() { return region; }
+	public RenderObject getRenderObject() { return renderObject; }
 }
