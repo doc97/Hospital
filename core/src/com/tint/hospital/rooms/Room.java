@@ -1,12 +1,12 @@
 package com.tint.hospital.rooms;
 
-import com.tint.hospital.RenderObject;
+import com.tint.hospital.render.RenderObject;
 
 public abstract class Room {
 
 	public int x, y;
 	public int width, height;
-	protected RenderObject renderObject;
+	public RenderObject renderObject;
 	
 	public Room(int x, int y, int width, int height) {
 		this.x = x;
@@ -14,6 +14,4 @@ public abstract class Room {
 		this.width = width;
 		this.height = height;
 	}
-	
-	public RenderObject getRenderObject() { return renderObject; }
 }

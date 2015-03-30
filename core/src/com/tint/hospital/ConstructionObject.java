@@ -1,29 +1,35 @@
 package com.tint.hospital;
 
+import com.tint.hospital.render.RenderSystem;
+import com.tint.hospital.render.TintedRenderObject;
+
 public class ConstructionObject {
 	
-	private int id;
-	private int x, y;
-	private int width, height;
+	public int id;
+	public int x, y;
+	public int width, height;
+	public TintedRenderObject renderObject;
 	
-	public ConstructionObject() {
-		set(-1, 0, 0);
+	public ConstructionObject(TintedRenderObject renderObject) {
+		this.renderObject = renderObject;
+		this.id = -1;
+		setPosition(0, 0);
+		setSize(0, 0);
 	}
 	
 	public void setPosition(int x, int y) {
-		this.x = x;
-		this.y = y;
+		this.x = x / RenderSystem.TILE_SIZE;
+		this.y = y / RenderSystem.TILE_SIZE;
+		renderObject.setPosition(this.x, this.y);
 	}
 	
-	public void set(int id, int width, int height) {
-		this.id = id;
+	public void setCenterPosition(int x, int y) {
+		setPosition(x - RenderSystem.TILE_SIZE * width / 2, y - RenderSystem.TILE_SIZE * height / 2);
+	}
+	
+	public void setSize(int width, int height) {
 		this.width = width;
 		this.height = height;
+		renderObject.setSize(width, height);
 	}
-	
-	public int getID() { return id; }
-	public int getX() { return x; }
-	public int getY() { return y; }
-	public int getWidth() { return width; }
-	public int getHeight() { return height; }
 }

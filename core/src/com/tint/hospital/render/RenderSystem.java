@@ -1,11 +1,13 @@
-package com.tint.hospital;
+package com.tint.hospital.render;
 
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.tint.hospital.LoggingSystem;
 
 public class RenderSystem {
 	private static int LAYER_AMOUNT = 5;
+	public static int TILE_SIZE = 64;
 	
 	private class RenderLayer {
 		private ArrayList<RenderObject> renderObjects;
@@ -69,5 +71,7 @@ public class RenderSystem {
 		
 		for(int i = 0; i < LAYER_AMOUNT; i++)
 			renderLayers[i] = new RenderLayer();
+		
+		LoggingSystem.log("Render System", "Initialized");
 	}
 }

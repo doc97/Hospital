@@ -10,6 +10,8 @@ public class Launcher extends ApplicationAdapter {
 	public void create() {
 		super.create();
 		Root.INSTANCE.createSystems();
+		Root.INSTANCE.loadGame();
+		Gdx.gl20.glClearColor(0.42f, 0.71f, 1f, 1f);
 	}
 
 	@Override

@@ -1,9 +1,11 @@
-package com.tint.hospital;
+package com.tint.hospital.render;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
+import com.tint.hospital.Root;
+import com.tint.hospital.Transform;
 
 public class MultipleAnimationObject implements RenderObject {
 
@@ -47,5 +49,19 @@ public class MultipleAnimationObject implements RenderObject {
 	public void playAnimation(Animation animation) {
 		currentAnimation = animation;
 		animationTime = 0;
+	}
+
+	@Override
+	public void setPosition(int x, int y) {
+		transform.setX(x);
+		transform.setY(y);
+	}
+
+	@Override
+	public void setSize(float width, float height) {
+		for(TextureRegion frame : currentAnimation.getKeyFrames()) {
+			frame.setRegionWidth((int) width);
+			frame.setRegionHeight((int) height); 
+		}
 	}
 }
