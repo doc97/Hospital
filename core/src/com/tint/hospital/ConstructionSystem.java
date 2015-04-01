@@ -5,12 +5,16 @@ import java.io.IOException;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.tint.hospital.input.ConstructionInput;
+import com.tint.hospital.input.GeneralInput;
 import com.tint.hospital.render.RenderObject;
 import com.tint.hospital.render.TextureObject;
 import com.tint.hospital.render.TintedRenderObject;
 import com.tint.hospital.rooms.ExaminationRoom;
 import com.tint.hospital.rooms.Room;
 import com.tint.hospital.rooms.WaitingRoom;
+import com.tint.hospital.utils.Assets;
+import com.tint.hospital.utils.FileUtils;
+import com.tint.hospital.utils.LoggingSystem;
 
 public class ConstructionSystem {
 	
@@ -21,7 +25,8 @@ public class ConstructionSystem {
 	public void create() {
 		LoggingSystem.log("Construction System", "Loading...");
 		currentObject = new ConstructionObject(new TintedRenderObject(new TextureObject(Assets.getTexture("construction object"), 0, 0, 0, 0), Color.GREEN));
-		background = new TextureObject(Assets.getTexture("construction object"), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		background = new TextureObject(Assets.getTexture("construction object"), -Camera.getCamera().viewportWidth / 2, -Camera.getCamera().viewportHeight / 2,
+				Camera.getCamera().viewportWidth, Camera.getCamera().viewportHeight);
 		
 		// Loading templates from file
 		String file;
@@ -50,7 +55,7 @@ public class ConstructionSystem {
 		}
 		
 		// Creating input handle
-		Root.INSTANCE.input.addProcessor(new ConstructionInput());
+		Root.INSTANCE.inputProcessor.addProcessor(new ConstructionInput());
 		
 		LoggingSystem.log("Construction System", "Done!");
 	}
@@ -60,8 +65,8 @@ public class ConstructionSystem {
 			// Checking if intersecting with any other rooms
 			if(isAvailable(currentObject)) {
 				// Remove 'ghost room' and add a real room
-				Root.INSTANCE.renderSystem.removeObject(currentObject.renderObject, 4);
-				Root.INSTANCE.renderSystem.removeObject(background, 3);
+				Root.INSTANCE.renderSystem.removeObject(currentObject.renderObject, 4, false);
+				Root.INSTANCE.renderSystem.removeObject(background, 3, true);
 				Root.INSTANCE.building.addRoom(getRoom(currentObject));
 				
 				if(getRoom(currentObject) != null)
@@ -77,8 +82,8 @@ public class ConstructionSystem {
 	
 	public void selectBuilding(int index) {
 		// Removes earlier ghost
-		Root.INSTANCE.renderSystem.removeObject(currentObject.renderObject, 4);
-		Root.INSTANCE.renderSystem.removeObject(background, 3);
+		Root.INSTANCE.renderSystem.removeObject(currentObject.renderObject, 4, false);
+		Root.INSTANCE.renderSystem.removeObject(background, 3, true);
 		
 		if(index < objects.length && index >= 0) {
 			// Sets current object attributes to match those of the object at specific index
@@ -86,17 +91,21 @@ public class ConstructionSystem {
 			currentObject.setSize(objects[index].width, objects[index].height);
 			
 			// Create a ghost and set its position
-			currentObject.setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+			currentObject.setPosition(GeneralInput.getMouseX(Gdx.input.getX()) + Camera.getCamera().position.x,
+					GeneralInput.getMouseY(Gdx.graphics.getHeight() - Gdx.input.getY()) + Camera.getCamera().position.y);
 			
-			// Set initial color
+			// Create render object
+			currentObject.renderObject = new TintedRenderObject(getRoom(currentObject).renderObject, Color.GREEN);
+
+			// Set initial color on render object
 			if(isAvailable(Root.INSTANCE.constructionSystem.getCurrentObject()))
 				currentObject.renderObject.setColor(Color.GREEN);
 			else
 				currentObject.renderObject.setColor(Color.RED);
 			
 			// Add render objects
-			Root.INSTANCE.renderSystem.addObject(currentObject.renderObject, 4);
-			Root.INSTANCE.renderSystem.addObject(background, 3);
+			Root.INSTANCE.renderSystem.addObject(currentObject.renderObject, 4, false);
+			Root.INSTANCE.renderSystem.addObject(background, 3, true);
 		}
 	}
 	
@@ -130,6 +139,7 @@ public class ConstructionSystem {
 			}
 		} 
 		
+		int emptyBlocks = 0;
 		for(int i = object.x; i < object.x + object.width; i++) {
 			for(int j = object.y; j < object.y + object.height; j++) {
 				// Must not be blocked
@@ -137,8 +147,10 @@ public class ConstructionSystem {
 					return false;
 				
 				// Must have full support under room
-				if(object.y > 0 && Root.INSTANCE.building.getRoomAt(i, object.y-1) == null)
-					return false;
+				if(object.y > 0 && Root.INSTANCE.building.getRoomAt(i, object.y-1) == null) {
+					if(++emptyBlocks > object.width / 2f)
+						return false;
+				}
 			}
 		}
 		return true;

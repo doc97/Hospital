@@ -1,6 +1,6 @@
 package com.tint.hospital.rooms;
 
-import com.tint.hospital.Assets;
+import com.tint.hospital.utils.Assets;
 import com.tint.hospital.render.TextureObject;
 
 public class ExaminationRoom extends Room {

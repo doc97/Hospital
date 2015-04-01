@@ -1,4 +1,4 @@
-package com.tint.hospital;
+package com.tint.hospital.utils;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

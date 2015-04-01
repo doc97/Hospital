@@ -1,25 +1,19 @@
 package com.tint.hospital;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
+import com.tint.hospital.states.StateSystem.States;
 
-public class Launcher extends ApplicationAdapter {
+public class Launcher extends Game {
 
 	@Override
 	public void create() {
-		super.create();
-		Root.INSTANCE.createSystems();
-		Root.INSTANCE.loadGame();
-		Gdx.gl20.glClearColor(0.42f, 0.71f, 1f, 1f);
+		Root.INSTANCE.createSystems(this);
+		Root.INSTANCE.stateSystem.enterState(States.GAMESTATE);
 	}
-
+	
 	@Override
-	public void render() {
-		super.render();
-		
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Root.INSTANCE.renderSystem.renderObjects(Gdx.graphics.getDeltaTime());
+	public void setScreen(Screen screen) {
+		super.setScreen(screen);
 	}
-
 }

@@ -2,10 +2,11 @@ package com.tint.hospital.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
+import com.tint.hospital.Camera;
 import com.tint.hospital.Root;
+import com.tint.hospital.input.GeneralInput.GameKeys;
 
 public class ConstructionInput extends InputAdapter {
 
@@ -14,15 +15,13 @@ public class ConstructionInput extends InputAdapter {
 
 	@Override
 	public boolean keyUp(int keycode) {
-		switch(keycode) {
 		
-		case Keys.NUM_1:
+		if(keycode == Root.INSTANCE.input.getKeyCode(GameKeys.CONSTRUCTION_SLOT_1)) {
 			Root.INSTANCE.constructionSystem.selectBuilding(0);
-			break;
-		case Keys.NUM_2:
+			return true;
+		} else if(keycode == Root.INSTANCE.input.getKeyCode(GameKeys.CONSTRUCTION_SLOT_2)) {
 			Root.INSTANCE.constructionSystem.selectBuilding(1);
-			break;
-		
+			return true;
 		}
 		return false;
 	}
@@ -35,7 +34,8 @@ public class ConstructionInput extends InputAdapter {
 				return true;
 			} else if(button == Buttons.LEFT) {
 				Root.INSTANCE.constructionSystem.build();
-				Root.INSTANCE.constructionSystem.getCurrentObject().setCenterPosition(screenX, Gdx.graphics.getHeight() - screenY);
+				Root.INSTANCE.constructionSystem.getCurrentObject().setCenterPosition(GeneralInput.getMouseX(screenX + Camera.getCamera().position.x),
+						GeneralInput.getMouseY(Gdx.graphics.getHeight() - screenY + Camera.getCamera().position.y));
 				return true;
 			}
 		}
@@ -45,7 +45,8 @@ public class ConstructionInput extends InputAdapter {
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 		if(Root.INSTANCE.constructionSystem.isActive()) {
-			Root.INSTANCE.constructionSystem.getCurrentObject().setCenterPosition(screenX, Gdx.graphics.getHeight() - screenY);
+			Root.INSTANCE.constructionSystem.getCurrentObject().setCenterPosition((GeneralInput.getMouseX(screenX) + Camera.getCamera().position.x),
+					(GeneralInput.getMouseY(Gdx.graphics.getHeight() - screenY) + Camera.getCamera().position.y));
 			
 			if(Root.INSTANCE.constructionSystem.isAvailable(Root.INSTANCE.constructionSystem.getCurrentObject()))
 				Root.INSTANCE.constructionSystem.getCurrentObject().renderObject.setColor(Color.GREEN);

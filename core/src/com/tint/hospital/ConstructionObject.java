@@ -17,14 +17,18 @@ public class ConstructionObject {
 		setSize(0, 0);
 	}
 	
-	public void setPosition(int x, int y) {
-		this.x = x / RenderSystem.TILE_SIZE;
-		this.y = y / RenderSystem.TILE_SIZE;
+	public void setPosition(float x, float y) {
+		this.x = (int) x / RenderSystem.TILE_SIZE;
+		this.y = (int) y / RenderSystem.TILE_SIZE;
 		renderObject.setPosition(this.x, this.y);
 	}
 	
-	public void setCenterPosition(int x, int y) {
-		setPosition(x - RenderSystem.TILE_SIZE * width / 2, y - RenderSystem.TILE_SIZE * height / 2);
+	public void setCenterPosition(float x, float y) {
+		float xpos = x + RenderSystem.TILE_SIZE / 2.0f;
+		float ypos = y + RenderSystem.TILE_SIZE / 2.0f;
+		this.x = (int) (xpos / RenderSystem.TILE_SIZE - width / 2.0f);
+		this.y = (int) (ypos / RenderSystem.TILE_SIZE - height / 2.0f);
+		renderObject.setPosition(this.x, this.y);
 	}
 	
 	public void setSize(int width, int height) {

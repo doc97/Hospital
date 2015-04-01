@@ -1,4 +1,4 @@
-package com.tint.hospital;
+package com.tint.hospital.utils;
 
 public class LoggingSystem {
 

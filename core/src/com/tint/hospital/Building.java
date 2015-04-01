@@ -20,7 +20,7 @@ public class Building {
 	
 	public void addRoom(Room room) {
 		rooms.add(new RoomData(room));
-		Root.INSTANCE.renderSystem.addObject(room.renderObject, 3);
+		Root.INSTANCE.renderSystem.addObject(room.renderObject, 3, false);
 	}
 	
 	public RoomData getRoomAt(int x, int y) {
