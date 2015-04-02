@@ -4,6 +4,7 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputAdapter;
 import com.tint.hospital.Camera;
 import com.tint.hospital.Root;
+import com.tint.hospital.input.GeneralInput.GameKeys;
 
 public class GameInput extends InputAdapter {
 
@@ -21,6 +22,12 @@ public class GameInput extends InputAdapter {
 
 	@Override
 	public boolean keyUp(int keycode) {
+		if(keycode == Root.INSTANCE.input.getKeyCode(GameKeys.CONSTRUCTION_MODE)) {
+			if(Root.INSTANCE.constructionSystem.isActive())
+				Root.INSTANCE.constructionSystem.exit();
+			else
+				Root.INSTANCE.constructionSystem.enter();
+		}
 		return Root.INSTANCE.input.releaseKey(keycode);
 	}
 	

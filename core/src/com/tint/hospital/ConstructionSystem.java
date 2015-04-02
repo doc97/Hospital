@@ -21,6 +21,7 @@ public class ConstructionSystem {
 	private ConstructionObject[] objects;
 	private ConstructionObject currentObject;
 	private RenderObject background;
+	private boolean active;
 	
 	public void create() {
 		LoggingSystem.log("Construction System", "Loading...");
@@ -80,10 +81,21 @@ public class ConstructionSystem {
 		}
 	}
 	
+	public void enter() {
+		active = true;
+		Root.INSTANCE.renderSystem.addObject(background, 3, true);
+	}
+	
+	public void exit() {
+		active = false;
+		Root.INSTANCE.renderSystem.removeObject(background, 3, true);
+		Root.INSTANCE.renderSystem.removeObject(currentObject.renderObject, 4, false);
+	}
+	
 	public void selectBuilding(int index) {
 		// Removes earlier ghost
 		Root.INSTANCE.renderSystem.removeObject(currentObject.renderObject, 4, false);
-		Root.INSTANCE.renderSystem.removeObject(background, 3, true);
+		
 		
 		if(index < objects.length && index >= 0) {
 			// Sets current object attributes to match those of the object at specific index
@@ -105,7 +117,7 @@ public class ConstructionSystem {
 			
 			// Add render objects
 			Root.INSTANCE.renderSystem.addObject(currentObject.renderObject, 4, false);
-			Root.INSTANCE.renderSystem.addObject(background, 3, true);
+			
 		}
 	}
 	
@@ -156,5 +168,5 @@ public class ConstructionSystem {
 		return true;
 	}
 	
-	public boolean isActive() { return currentObject.id > -1; }
+	public boolean isActive() { return active; }
 }

@@ -11,7 +11,8 @@ import com.tint.hospital.Camera;
 public class GeneralInput {
 
 	public enum GameKeys {
-		MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN, CONSTRUCTION_SLOT_1, CONSTRUCTION_SLOT_2, CONSTRUCTION_SLOT_3, CONSTRUCTION_SLOT_4;
+		MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN, CONSTRUCTION_SLOT_1, CONSTRUCTION_SLOT_2, CONSTRUCTION_SLOT_3, CONSTRUCTION_SLOT_4,
+		CONSTRUCTION_MODE;
 	}
 	
 	public Map<GameKeys, Integer> gameKeys = new EnumMap<GameKeys, Integer>(GameKeys.class);
@@ -28,6 +29,7 @@ public class GeneralInput {
 		gameKeys.put(GameKeys.CONSTRUCTION_SLOT_2, Keys.NUM_2);
 		gameKeys.put(GameKeys.CONSTRUCTION_SLOT_3, Keys.NUM_3);
 		gameKeys.put(GameKeys.CONSTRUCTION_SLOT_4, Keys.NUM_4);
+		gameKeys.put(GameKeys.CONSTRUCTION_MODE, Keys.C);
 	}
 	
 	public void assignKey(GameKeys key, int keycode) {

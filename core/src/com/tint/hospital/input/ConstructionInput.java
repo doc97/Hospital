@@ -15,13 +15,14 @@ public class ConstructionInput extends InputAdapter {
 
 	@Override
 	public boolean keyUp(int keycode) {
-		
-		if(keycode == Root.INSTANCE.input.getKeyCode(GameKeys.CONSTRUCTION_SLOT_1)) {
-			Root.INSTANCE.constructionSystem.selectBuilding(0);
-			return true;
-		} else if(keycode == Root.INSTANCE.input.getKeyCode(GameKeys.CONSTRUCTION_SLOT_2)) {
-			Root.INSTANCE.constructionSystem.selectBuilding(1);
-			return true;
+		if(Root.INSTANCE.constructionSystem.isActive()) {
+			if(keycode == Root.INSTANCE.input.getKeyCode(GameKeys.CONSTRUCTION_SLOT_1)) {
+				Root.INSTANCE.constructionSystem.selectBuilding(0);
+				return true;
+			} else if(keycode == Root.INSTANCE.input.getKeyCode(GameKeys.CONSTRUCTION_SLOT_2)) {
+				Root.INSTANCE.constructionSystem.selectBuilding(1);
+				return true;
+			}
 		}
 		return false;
 	}
