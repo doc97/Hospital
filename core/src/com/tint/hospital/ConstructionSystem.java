@@ -53,6 +53,7 @@ public class ConstructionSystem {
 		} catch (IOException e) {
 			LoggingSystem.error("Construction System", "Couldn't load construction objects");
 			e.printStackTrace();
+			Gdx.app.exit();
 		}
 		
 		// Creating input handle

@@ -49,6 +49,7 @@ public class Assets {
 		} catch (IOException e) {
 			LoggingSystem.error("Assets", "Animations not loaded");
 			e.printStackTrace();
+			Gdx.app.exit();
 		}
 	}
 

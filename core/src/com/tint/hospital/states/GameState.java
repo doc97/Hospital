@@ -1,7 +1,7 @@
 package com.tint.hospital.states;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.ScreenAdapter;
 import com.tint.hospital.Camera;
 import com.tint.hospital.Root;
 import com.tint.hospital.input.GameInput;
@@ -9,12 +9,8 @@ import com.tint.hospital.input.GeneralInput.GameKeys;
 import com.tint.hospital.rooms.ExaminationRoom;
 
 
-public class GameState extends State {
+public class GameState extends ScreenAdapter {
 	
-	public GameState(StateSystem stateSystem) {
-		super(stateSystem);
-	}
-
 	public final void loadGame() {
 		// TODO dynamic game data loading required
 		Root.INSTANCE.building.addRoom(new ExaminationRoom(0, 0, 2, 1));
@@ -43,23 +39,7 @@ public class GameState extends State {
 		
 		Camera.update();
 		
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Root.INSTANCE.renderSystem.renderObjects(Gdx.graphics.getDeltaTime());
-	}
-
-	@Override
-	public void resize(int width, int height) {
-
-	}
-
-	@Override
-	public void pause() {
-
-	}
-
-	@Override
-	public void resume() {
-
 	}
 
 	@Override
@@ -67,14 +47,4 @@ public class GameState extends State {
 		Gdx.gl20.glClearColor(0.42f, 0.71f, 1f, 1f);
 		loadGame();
 	}
-	
-	@Override
-	public void hide() {
-
-	}
-
-	@Override
-	public void dispose() {
-
-	}  
 }

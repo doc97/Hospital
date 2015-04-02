@@ -10,9 +10,6 @@ import com.tint.hospital.input.GeneralInput.GameKeys;
 
 public class ConstructionInput extends InputAdapter {
 
-	public ConstructionInput() {
-	}
-
 	@Override
 	public boolean keyUp(int keycode) {
 		if(Root.INSTANCE.constructionSystem.isActive()) {

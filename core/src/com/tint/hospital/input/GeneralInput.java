@@ -18,8 +18,6 @@ public class GeneralInput {
 	public Map<GameKeys, Integer> gameKeys = new EnumMap<GameKeys, Integer>(GameKeys.class);
 	public boolean[] keys = new boolean[GameKeys.values().length];
 	
-	public GeneralInput() {}
-	
 	public void initialize() {
 		gameKeys.put(GameKeys.MOVE_UP, Keys.W);
 		gameKeys.put(GameKeys.MOVE_LEFT, Keys.A);
