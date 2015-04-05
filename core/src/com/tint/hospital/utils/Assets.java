@@ -17,7 +17,7 @@ public class Assets {
 	private static Map<String, TextureRegion> textures = new HashMap<String, TextureRegion>();
 
 	public static void loadGraphics() {
-		TextureAtlas ta = new TextureAtlas(Gdx.files.internal("graphics/packed/Hospital.atlas"));
+		TextureAtlas ta = new TextureAtlas(Gdx.files.internal("graphics/Hospital.atlas"));
 		
 		for(AtlasRegion region : ta.getRegions()) {
 			// Load textures only
@@ -26,28 +26,42 @@ public class Assets {
 		}
 		LoggingSystem.log("Assets", "Textures loaded");
 		
+		int i = 0;
 		// Load animations
 		try {
 			String[] animData = FileUtils.readFromFile("data/animations.txt").split("/n");
-			for(String anim : animData) {
+			for(i = 0; i < animData.length; i++) {
+				String anim = animData[i];
 				if(anim.startsWith("//"))
 					continue;
 				
 				String[] data = anim.split(",");
 				String name = data[0];
-				int frameWidth = Integer.valueOf(data[1]);
-				int frameHeight = Integer.valueOf(data[2]);
-				int firstX = Integer.valueOf(data[3]);
-				int firstY = Integer.valueOf(data[4]);
-				int lastX = Integer.valueOf(data[5]);
-				int lastY = Integer.valueOf(data[6]);
-				float frameTime = Float.valueOf(data[7]);
+				int frameWidth = Integer.valueOf(data[1].trim());
+				int frameHeight = Integer.valueOf(data[2].trim());
+				int firstX = Integer.valueOf(data[3].trim());
+				int firstY = Integer.valueOf(data[4].trim());
+				int lastX = Integer.valueOf(data[5].trim());
+				int lastY = Integer.valueOf(data[6].trim());
+				float frameTime = Float.valueOf(data[7].trim());
+				
+				TextureRegion region = ta.findRegion(name);
+				
+				if(region == null) {
+					LoggingSystem.error("Assets", "Error parsing animations on line " + (i + 1) + ". No such texture found");
+					Gdx.app.exit();
+					return;
+				}
 				
 				animations.put(name, loadAnimation(ta.findRegion(name), frameWidth, frameHeight, frameTime, firstX, firstY, lastX, lastY));
 			}
 			LoggingSystem.log("Assets", "Animations loaded");
 		} catch (IOException e) {
-			LoggingSystem.error("Assets", "Animations not loaded");
+			LoggingSystem.error("Assets", "Error loading animations");
+			e.printStackTrace();
+			Gdx.app.exit();
+		} catch (NumberFormatException|ArrayIndexOutOfBoundsException e) {
+			LoggingSystem.error("Assets", "Error parsing animations on line " + (i + 1));
 			e.printStackTrace();
 			Gdx.app.exit();
 		}

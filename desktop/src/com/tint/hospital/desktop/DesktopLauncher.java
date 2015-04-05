@@ -11,7 +11,7 @@ public class DesktopLauncher {
 		Settings s = new Settings();
 		s.paddingX = 0;
 		s.paddingY = 0;
-		TexturePacker.process(s, "graphics/unpacked", "graphics/packed", "Hospital");
+		TexturePacker.processIfModified(s, "graphics/unpacked", "graphics", "Hospital");
 		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 1280;
