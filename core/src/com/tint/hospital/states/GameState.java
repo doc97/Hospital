@@ -1,43 +1,52 @@
 package com.tint.hospital.states;
 
+import java.io.IOException;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.tint.hospital.Camera;
+import com.badlogic.gdx.utils.Json;
+import com.tint.hospital.ConstructionMode;
 import com.tint.hospital.Root;
+import com.tint.hospital.data.GameData;
 import com.tint.hospital.input.GameInput;
-import com.tint.hospital.input.GeneralInput.GameKeys;
-import com.tint.hospital.rooms.ExaminationRoom;
+import com.tint.hospital.render.RenderSystem;
+import com.tint.hospital.rooms.Room;
+import com.tint.hospital.utils.FileUtils;
+import com.tint.hospital.utils.LoggingSystem;
 
 
 public class GameState extends ScreenAdapter {
 	
+	private ConstructionMode constructionMode = new ConstructionMode();
+	public static GameData gameData;
+	
 	public final void loadGame() {
-		// TODO dynamic game data loading required
-		Root.INSTANCE.building.addRoom(new ExaminationRoom(0, 0, 2, 1));
+		LoggingSystem.log("Game", "Loading game....");
+
+		Json json = new Json();
+		try {
+			gameData = json.fromJson(GameData.class, FileUtils.readFromFile("data/game_data.json", false));
+			constructionMode.create();
+		} catch (IOException e) {
+			e.printStackTrace();
+			LoggingSystem.error("Game", "Error loading game data");
+			Gdx.app.exit();
+		}
+		
+		for(Room r : gameData.gameStartData.rooms) {
+			r.renderObject.setPosition(r.x * RenderSystem.TILE_SIZE, r.y * RenderSystem.TILE_SIZE);
+			r.renderObject.setSize(r.width * RenderSystem.TILE_SIZE, r.height * RenderSystem.TILE_SIZE);
+			Root.INSTANCE.building.addRoom(r);
+		}
 		
 		// TODO temporary loading code
-		Root.INSTANCE.input.initialize();
-		Root.INSTANCE.inputProcessor.addProcessor(new GameInput());
-		Gdx.input.setInputProcessor(Root.INSTANCE.inputProcessor);
+		Root.INSTANCE.input.addProcessor(new GameInput(constructionMode));
+		Gdx.input.setInputProcessor(Root.INSTANCE.input);
 	}
 	
 	@Override
 	public void render(float delta) {
-		// Moving camera with keyboard
-		if(Root.INSTANCE.input.isPressed(GameKeys.MOVE_UP)) {
-			Camera.addPosition(0, 8);
-		}
-		if(Root.INSTANCE.input.isPressed(GameKeys.MOVE_LEFT)) {
-			Camera.addPosition(-8, 0);
-		}
-		if(Root.INSTANCE.input.isPressed(GameKeys.MOVE_DOWN)) {
-			Camera.addPosition(0, -8);
-		}
-		if(Root.INSTANCE.input.isPressed(GameKeys.MOVE_RIGHT)) {
-			Camera.addPosition(8, 0);
-		}
-		
-		Camera.update();
+		Root.INSTANCE.input.updateProcessors();
 		
 		Root.INSTANCE.renderSystem.renderObjects(Gdx.graphics.getDeltaTime());
 	}

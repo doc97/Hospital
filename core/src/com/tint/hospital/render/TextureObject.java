@@ -8,15 +8,15 @@ public class TextureObject implements RenderObject {
 
 	private TextureRegion textureRegion;
 	private Transform transform;
-	private float width, height;
+	private int width, height;
 	
-	public TextureObject(TextureRegion textureRegion, float x, float y, float width, float height) {
+	public TextureObject(TextureRegion textureRegion, float x, float y, int width, int height) {
 		this.textureRegion = textureRegion;
 		transform = new Transform();
-		transform.setX(x * RenderSystem.TILE_SIZE);
-		transform.setY(y * RenderSystem.TILE_SIZE);
-		this.width = width * RenderSystem.TILE_SIZE;
-		this.height = height * RenderSystem.TILE_SIZE;
+		transform.setX(x);
+		transform.setY(y);
+		this.width = width;
+		this.height = height;
 	}
 
 	@Override
@@ -26,14 +26,14 @@ public class TextureObject implements RenderObject {
 	
 	@Override
 	public void setPosition(int x, int y) {
-		transform.setX(x * RenderSystem.TILE_SIZE);
-		transform.setY(y * RenderSystem.TILE_SIZE);
+		transform.setX(x);
+		transform.setY(y);
 	}
 	
 	@Override
-	public void setSize(float width, float height) {
-		this.width = width * RenderSystem.TILE_SIZE;
-		this.height = height * RenderSystem.TILE_SIZE;
+	public void setSize(int width, int height) {
+		this.width = width;
+		this.height = height;
 	}
 
 	public void setTexture(TextureRegion region) {

@@ -28,9 +28,8 @@ public class Assets {
 		int i = 0;
 		// Load animations
 		try {
-			String[] animData = FileUtils.readFromFile("data/animations.txt").split("/n");
-			for(i = 0; i < animData.length; i++) {
-				String anim = animData[i];
+			String[] animData = FileUtils.readFromFile("data/animations.txt", true).split("/n");
+			for(String anim : animData) {
 				if(anim.startsWith("//"))
 					continue;
 				

@@ -1,23 +1,38 @@
 package com.tint.hospital.input;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.graphics.Color;
-import com.tint.hospital.Camera;
-import com.tint.hospital.Root;
-import com.tint.hospital.input.GeneralInput.GameKeys;
+import java.util.EnumMap;
+import java.util.Map;
 
-public class ConstructionInput extends InputAdapter {
+import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
+import com.tint.hospital.ConstructionMode;
+
+public class ConstructionInput extends CustomInputAdapter {
+
+	public enum ConstructionKeys {
+		CONSTRUCTION_SLOT1, CONSTRUCTION_SLOT2;
+	}
+	private Map<ConstructionKeys, Integer> keys = new EnumMap<ConstructionKeys, Integer>(ConstructionKeys.class);
+	private ConstructionMode mode;
+	
+	public ConstructionInput(ConstructionMode mode) {
+		this.mode = mode;
+		keys.put(ConstructionKeys.CONSTRUCTION_SLOT1, Keys.NUM_1);
+		keys.put(ConstructionKeys.CONSTRUCTION_SLOT2, Keys.NUM_2);
+	}
+	
+	@Override
+	public void update() {}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		if(Root.INSTANCE.constructionSystem.isActive()) {
-			if(keycode == Root.INSTANCE.input.getKeyCode(GameKeys.CONSTRUCTION_SLOT_1)) {
-				Root.INSTANCE.constructionSystem.selectBuilding(0);
+		if(mode.isActive()) {
+			if(keycode == keys.get(ConstructionKeys.CONSTRUCTION_SLOT1)) {
+				mode.selectBuilding(0);
 				return true;
-			} else if(keycode == Root.INSTANCE.input.getKeyCode(GameKeys.CONSTRUCTION_SLOT_2)) {
-				Root.INSTANCE.constructionSystem.selectBuilding(1);
+			} else if(keycode == keys.get(ConstructionKeys.CONSTRUCTION_SLOT2)) {
+				mode.selectBuilding(1);
 				return true;
 			}
 		}
@@ -26,14 +41,13 @@ public class ConstructionInput extends InputAdapter {
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		if(Root.INSTANCE.constructionSystem.isActive()) {
+		if(mode.isActive()) {
 			if(button == Buttons.RIGHT) {
-				Root.INSTANCE.constructionSystem.selectBuilding(-1);
+				mode.exit();
 				return true;
 			} else if(button == Buttons.LEFT) {
-				Root.INSTANCE.constructionSystem.build();
-				Root.INSTANCE.constructionSystem.getCurrentObject().setCenterPosition(GeneralInput.getMouseX(screenX + Camera.getCamera().position.x),
-						GeneralInput.getMouseY(Gdx.graphics.getHeight() - screenY + Camera.getCamera().position.y));
+				mode.build();
+				mode.calculateCurrentObjectPosition(screenX, screenY);
 				return true;
 			}
 		}
@@ -42,14 +56,13 @@ public class ConstructionInput extends InputAdapter {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		if(Root.INSTANCE.constructionSystem.isActive()) {
-			Root.INSTANCE.constructionSystem.getCurrentObject().setCenterPosition((GeneralInput.getMouseX(screenX) + Camera.getCamera().position.x),
-					(GeneralInput.getMouseY(Gdx.graphics.getHeight() - screenY) + Camera.getCamera().position.y));
+		if(mode.isActive()) {
+			mode.calculateCurrentObjectPosition(screenX, screenY);
 			
-			if(Root.INSTANCE.constructionSystem.isAvailable(Root.INSTANCE.constructionSystem.getCurrentObject()))
-				Root.INSTANCE.constructionSystem.getCurrentObject().renderObject.setColor(Color.GREEN);
+			if(mode.isAvailable())
+				mode.getCurrentObject().setColor(Color.GREEN);
 			else
-				Root.INSTANCE.constructionSystem.getCurrentObject().renderObject.setColor(Color.RED);
+				mode.getCurrentObject().setColor(Color.RED);
 		}
 		return false;
 	}

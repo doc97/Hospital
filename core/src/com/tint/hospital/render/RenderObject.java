@@ -6,5 +6,5 @@ public interface RenderObject {
 
 	public void render(SpriteBatch batch);
 	public void setPosition(int x, int y);
-	public void setSize(float width, float height);
+	public void setSize(int width, int height);
 }

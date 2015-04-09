@@ -12,13 +12,13 @@ public class FileUtils {
 	 * @return the string containing the file content
 	 * @throws IOException 
 	*/
-	public static String readFromFile(String filename) throws IOException {
+	public static String readFromFile(String filename, boolean lines) throws IOException {
 		BufferedReader reader;
 		StringBuilder builder = new StringBuilder();
 		String line;
 		reader = new BufferedReader(new FileReader(filename));
 		while((line = reader.readLine()) != null) {
-			builder.append(line + "/n");
+			builder.append(line + (lines ? "/n" : " "));
 		}
 		reader.close();
 		

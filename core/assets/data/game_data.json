@@ -1,0 +1,31 @@
+{
+	constructionData:
+	{
+		rooms:
+		[
+			{
+				class: com.tint.hospital.rooms.ExaminationRoom,
+				width: 2,
+				height: 1,
+			},
+			{
+				class: com.tint.hospital.rooms.WaitingRoom,
+				width: 4,
+				height: 1,
+			},
+		]
+	},
+	gameStartData:
+	{
+		rooms:
+		[
+			{
+				class: com.tint.hospital.rooms.ExaminationRoom,
+				x: 0,
+				y: 0,
+				width: 2,
+				height: 1,
+			}
+		]
+	}
+}
