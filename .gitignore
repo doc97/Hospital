@@ -62,3 +62,6 @@ build/
 
 ## OS Specific
 .DS_Store
+
+core/assets/graphics/Hospital.png
+core/assets/graphics/Hospital.atlas
