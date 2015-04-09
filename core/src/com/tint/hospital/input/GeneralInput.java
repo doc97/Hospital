@@ -33,7 +33,7 @@ public class GeneralInput {
 	public void assignKey(GameKeys key, int keycode) {
 		// Only if there's no key with same keycode already
 		if(getIndexByKeycode(keycode) == -1)
-			gameKeys.replace(key, keycode);
+			gameKeys.put(key, keycode);
 	}
 	
 	public boolean pressKey(int keycode) {

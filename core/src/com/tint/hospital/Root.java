@@ -15,6 +15,7 @@ public enum Root {
 	public final Building building = new Building();
 	public final InputMultiplexer inputProcessor = new InputMultiplexer();
 	public final GeneralInput input = new GeneralInput();
+	public final EconomySystem economySystem = new EconomySystem();
 	
 	public final void createSystems(Launcher launcher) {
 		Assets.loadGraphics();

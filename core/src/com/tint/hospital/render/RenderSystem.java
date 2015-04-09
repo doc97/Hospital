@@ -1,6 +1,7 @@
 package com.tint.hospital.render;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -13,28 +14,10 @@ public class RenderSystem {
 	public static int TILE_SIZE = 128;
 	
 	private class RenderLayer {
-		private ArrayList<RenderObject> renderObjects;
-		
-		private RenderLayer() {
-			renderObjects = new ArrayList<RenderObject>();
-		}
-
-		private void add(RenderObject renderObject) {
-			renderObjects.add(renderObject);
-		}
-		
-		private void remove(RenderObject renderObject) {
-			for(RenderObject ro : renderObjects) {
-				if(ro.equals(renderObject)) {
-					renderObjects.remove(ro);
-					break;
-				}
-			}
-		}
+		private List<RenderObject> renderObjects = new ArrayList<RenderObject>();
 	}
 
 	private RenderLayer[] renderLayers;
-	private RenderLayer[] stillRenderLayers;
 	private SpriteBatch spriteBatch;
 	private float frameDelta;
 	
@@ -44,49 +27,29 @@ public class RenderSystem {
 		
 		frameDelta = delta;
 		
-		Camera.resetPosition();
 		Camera.update();
 		spriteBatch.setProjectionMatrix(Camera.getCamera().combined);
 		spriteBatch.begin();
-		
 		for(RenderLayer rl : renderLayers) {
 			for(RenderObject ro : rl.renderObjects) {
 				ro.render(spriteBatch);
 			}
 		}
-		spriteBatch.flush();
-		
-		Camera.getCamera().position.set(0, 0, 0);
-		Camera.update();
-		spriteBatch.setProjectionMatrix(Camera.getCamera().combined);
-		
-		for(RenderLayer rl : stillRenderLayers)
-			for(RenderObject ro : rl.renderObjects)
-				ro.render(spriteBatch);
-		
-		Camera.resetPosition();
-		Camera.update();
 		spriteBatch.end();
 	}
 	
-	public void addObject(RenderObject renderObject, int layerIndex, boolean still) {
+	public void addObject(RenderObject renderObject, int layerIndex) {
 		if(layerIndex < 0 || layerIndex >= LAYER_AMOUNT)
 			throw new IllegalArgumentException("Layer Index is out of range");
 		
-		if(still)
-			stillRenderLayers[layerIndex].add(renderObject);
-		else
-			renderLayers[layerIndex].add(renderObject);
+		renderLayers[layerIndex].renderObjects.add(renderObject);
 	}
 	
-	public void removeObject(RenderObject renderObject, int layerIndex, boolean still) {
+	public void removeObject(RenderObject renderObject, int layerIndex) {
 		if(layerIndex < 0 || layerIndex >= LAYER_AMOUNT)
 			throw new IllegalArgumentException("Layer Index is out of range");
 			
-		if(still)
-			stillRenderLayers[layerIndex].remove(renderObject);
-		else
-			renderLayers[layerIndex].remove(renderObject);
+		renderLayers[layerIndex].renderObjects.remove(renderObject);
 	}
 
 	public float getFrameDelta() {
@@ -97,11 +60,9 @@ public class RenderSystem {
 		spriteBatch = new SpriteBatch();
 		
 		renderLayers = new RenderLayer[LAYER_AMOUNT];
-		stillRenderLayers = new RenderLayer[LAYER_AMOUNT];
 		
 		for(int i = 0; i < LAYER_AMOUNT; i++) {
 			renderLayers[i] = new RenderLayer();
-			stillRenderLayers[i] = new RenderLayer();
 		}
 		
 		LoggingSystem.log("Render System", "Initialized");

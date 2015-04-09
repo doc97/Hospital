@@ -67,8 +67,8 @@ public class ConstructionSystem {
 			// Checking if intersecting with any other rooms
 			if(isAvailable(currentObject)) {
 				// Remove 'ghost room' and add a real room
-				Root.INSTANCE.renderSystem.removeObject(currentObject.renderObject, 4, false);
-				Root.INSTANCE.renderSystem.removeObject(background, 3, true);
+				Root.INSTANCE.renderSystem.removeObject(currentObject.renderObject, 4);
+				Root.INSTANCE.renderSystem.removeObject(background, 3);
 				Root.INSTANCE.building.addRoom(getRoom(currentObject));
 				
 				if(getRoom(currentObject) != null)
@@ -84,18 +84,18 @@ public class ConstructionSystem {
 	
 	public void enter() {
 		active = true;
-		Root.INSTANCE.renderSystem.addObject(background, 3, true);
+		Root.INSTANCE.renderSystem.addObject(background, 3);
 	}
 	
 	public void exit() {
 		active = false;
-		Root.INSTANCE.renderSystem.removeObject(background, 3, true);
-		Root.INSTANCE.renderSystem.removeObject(currentObject.renderObject, 4, false);
+		Root.INSTANCE.renderSystem.removeObject(background, 3);
+		Root.INSTANCE.renderSystem.removeObject(currentObject.renderObject, 4);
 	}
 	
 	public void selectBuilding(int index) {
 		// Removes earlier ghost
-		Root.INSTANCE.renderSystem.removeObject(currentObject.renderObject, 4, false);
+		Root.INSTANCE.renderSystem.removeObject(currentObject.renderObject, 4);
 		
 		
 		if(index < objects.length && index >= 0) {
@@ -117,7 +117,7 @@ public class ConstructionSystem {
 				currentObject.renderObject.setColor(Color.RED);
 			
 			// Add render objects
-			Root.INSTANCE.renderSystem.addObject(currentObject.renderObject, 4, false);
+			Root.INSTANCE.renderSystem.addObject(currentObject.renderObject, 4);
 			
 		}
 	}

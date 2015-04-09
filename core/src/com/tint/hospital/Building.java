@@ -6,34 +6,56 @@ import java.util.List;
 import com.tint.hospital.rooms.Room;
 
 public class Building {
-	public class RoomData {
+	public class RoomPathData implements Comparable<RoomPathData> {
 		public Room room;
-		public List<RoomData> connectedRooms;
+		public List<RoomPathData> connectedRooms;
+		public int totalCost;
+		public int distanceCost;
+		public RoomPathData parent;
 		
-		public RoomData(Room room) {
+		public RoomPathData(Room room) {
 			this.room = room;
-			connectedRooms = new ArrayList<RoomData>(4);
+			connectedRooms = new ArrayList<RoomPathData>(4);
+		}
+
+		@Override
+		public int compareTo(RoomPathData other) {
+			return other.totalCost - totalCost;
 		}
 	}
-
-	private List<RoomData> rooms = new ArrayList<RoomData>();
+	
+	private List<RoomPathData> rooms = new ArrayList<RoomPathData>();
 	
 	public void addRoom(Room room) {
-		rooms.add(new RoomData(room));
-		Root.INSTANCE.renderSystem.addObject(room.renderObject, 3, false);
+		RoomPathData rpd = new RoomPathData(room);
+		
+		RoomPathData adjecent = getRoomData(getRoomAt(room.x - 1, room.y));
+		if(adjecent != null) {
+			rpd.connectedRooms.add(adjecent);
+			adjecent.connectedRooms.add(rpd);
+		}
+		
+		adjecent = getRoomData(getRoomAt(room.x + room.width, room.y));
+		if(adjecent != null) {
+			rpd.connectedRooms.add(adjecent);
+			adjecent.connectedRooms.add(rpd);
+		}
+		
+		rooms.add(rpd);
+		Root.INSTANCE.renderSystem.addObject(room.renderObject, 2);
 	}
 	
-	public RoomData getRoomAt(int x, int y) {
-		for(RoomData rd : rooms) {
+	public Room getRoomAt(int x, int y) {
+		for(RoomPathData rd : rooms) {
 			if(rd.room.x <= x && rd.room.y <= y && rd.room.x + rd.room.width > x && rd.room.y + rd.room.height > y)
-				return rd;
+				return rd.room;
 		}
 		
 		return null;
 	}
 
-	public RoomData getRoomData(Room room) {
-		for(RoomData rd : rooms) {
+	public RoomPathData getRoomData(Room room) {
+		for(RoomPathData rd : rooms) {
 			if(rd.room == room)
 				return rd;
 		}

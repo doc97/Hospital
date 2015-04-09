@@ -7,6 +7,7 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
@@ -20,9 +21,7 @@ public class Assets {
 		TextureAtlas ta = new TextureAtlas(Gdx.files.internal("graphics/Hospital.atlas"));
 		
 		for(AtlasRegion region : ta.getRegions()) {
-			// Load textures only
-			if(!(region.name).contains("anim"))
-				textures.put(region.name, region);
+			textures.put(region.name, region);
 		}
 		LoggingSystem.log("Assets", "Textures loaded");
 		
@@ -44,6 +43,7 @@ public class Assets {
 				int lastX = Integer.valueOf(data[5].trim());
 				int lastY = Integer.valueOf(data[6].trim());
 				float frameTime = Float.valueOf(data[7].trim());
+				PlayMode playMode = PlayMode.valueOf(data[8].trim());
 				
 				TextureRegion region = ta.findRegion(name);
 				
@@ -53,14 +53,17 @@ public class Assets {
 					return;
 				}
 				
-				animations.put(name, loadAnimation(ta.findRegion(name), frameWidth, frameHeight, frameTime, firstX, firstY, lastX, lastY));
+				Animation animation = loadAnimation(ta.findRegion(name), frameWidth, frameHeight, frameTime, firstX, firstY, lastX, lastY);
+				animation.setPlayMode(playMode);
+				
+				animations.put(name, animation);
 			}
 			LoggingSystem.log("Assets", "Animations loaded");
 		} catch (IOException e) {
 			LoggingSystem.error("Assets", "Error loading animations");
 			e.printStackTrace();
 			Gdx.app.exit();
-		} catch (NumberFormatException|ArrayIndexOutOfBoundsException e) {
+		} catch (IllegalArgumentException|ArrayIndexOutOfBoundsException e) {
 			LoggingSystem.error("Assets", "Error parsing animations on line " + (i + 1));
 			e.printStackTrace();
 			Gdx.app.exit();
@@ -88,9 +91,9 @@ public class Assets {
 				x = firstX;
 			
 			for(; x < trArr[0].length; x++) {
+				frames.add(trArr[y][x]);
 				if(y == lastY && x == lastX)
 					break;
-				frames.add(trArr[y][x]);
 			}
 		}
 		return new Animation(frameTime, frames);

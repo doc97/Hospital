@@ -47,8 +47,9 @@ public class MultipleAnimationObject implements RenderObject {
 	 * @param animation Can be null to stop animation
 	 */
 	public void playAnimation(Animation animation) {
+		if(currentAnimation == null)
+			animationTime = 0;
 		currentAnimation = animation;
-		animationTime = 0;
 	}
 
 	@Override

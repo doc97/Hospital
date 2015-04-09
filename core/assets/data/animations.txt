@@ -1,1 +1,3 @@
-// filename, frame width, frame height, first x, first y, last x, last y, frame time (seconds)
+// filename, frame width, frame height, first x, first y, last x, last y, frame time (seconds), play mode
+male_walkcycle, 64, 64, 0, 0, 7, 0, 0.08, LOOP
+male_standing, 64, 64, 0, 0, 0, 0, 1, NORMAL

@@ -7,10 +7,6 @@ import com.tint.hospital.utils.LoggingSystem;
 public class Camera {
 
 	private static OrthographicCamera camera;
-	private static float camX, camY;
-	private static float speed = 2f;
-	
-	private Camera() {}
 	
 	public static void setup() {
 		int renderWidth = 1920;
@@ -25,8 +21,6 @@ public class Camera {
 		}
 		
 		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-		camX = camera.viewportWidth / 2;
-		camY = camera.viewportHeight / 2;
 		camera.update(true);
 		
 		LoggingSystem.log("Camera", "Initialized");
@@ -36,36 +30,18 @@ public class Camera {
 		camera.update(true);
 	}	
 	
-	public static void resetPosition() {
-		camera.position.x = camX;
-		camera.position.y = camY;
-	}
-	
 	public static void addPosition(float x, float y) {
-		camera.position.x += x;
-		camX = camera.position.x;
-		
-		// Camera has a lower limit
-		if(camera.position.y + y >= camera.viewportHeight / 2) {
-			camera.position.y += y;
-			camY = camera.position.y;
-		} else {
-			camera.position.y = camera.viewportHeight / 2;
-			camY = camera.viewportHeight / 2;
-		}
+		setPosition(camera.position.x + x, camera.position.y + y);
 	}
 
 	public static void setPosition(float x, float y) {
 		camera.position.x = x;
-		camX = x;
 		
 		// Camera has a lower limit
 		if(y >= camera.viewportHeight / 2) {
 			camera.position.y = y;
-			camY = y;
 		} else {
 			camera.position.y = camera.viewportHeight / 2;
-			camY = camera.viewportHeight / 2;
 		}
 	}
 	
@@ -74,5 +50,4 @@ public class Camera {
 	}
 	
 	public static OrthographicCamera getCamera() { return camera; }
-	public static float getSpeed() { return speed; }
 }
