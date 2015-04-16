@@ -5,10 +5,11 @@ import java.util.Map;
 
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.tint.hospital.ConstructionMode;
 
-public class ConstructionInput extends CustomInputAdapter {
+public class ConstructionInput extends InputAdapter {
 
 	public enum ConstructionKeys {
 		CONSTRUCTION_SLOT1, CONSTRUCTION_SLOT2;
@@ -21,49 +22,37 @@ public class ConstructionInput extends CustomInputAdapter {
 		keys.put(ConstructionKeys.CONSTRUCTION_SLOT1, Keys.NUM_1);
 		keys.put(ConstructionKeys.CONSTRUCTION_SLOT2, Keys.NUM_2);
 	}
-	
-	@Override
-	public void update() {}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		if(mode.isActive()) {
-			if(keycode == keys.get(ConstructionKeys.CONSTRUCTION_SLOT1)) {
-				mode.selectBuilding(0);
-				return true;
-			} else if(keycode == keys.get(ConstructionKeys.CONSTRUCTION_SLOT2)) {
-				mode.selectBuilding(1);
-				return true;
-			}
+		if(keycode == keys.get(ConstructionKeys.CONSTRUCTION_SLOT1)) {
+			mode.selectBuilding(0);
+			return true;
+		} else if(keycode == keys.get(ConstructionKeys.CONSTRUCTION_SLOT2)) {
+			mode.selectBuilding(1);
+			return true;
 		}
 		return false;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		if(mode.isActive()) {
-			if(button == Buttons.RIGHT) {
-				mode.exit();
-				return true;
-			} else if(button == Buttons.LEFT) {
-				mode.build();
-				mode.calculateCurrentObjectPosition(screenX, screenY);
-				return true;
-			}
+		if(button == Buttons.RIGHT) {
+			mode.exit();
+			return true;
+		} else if(button == Buttons.LEFT) {
+			mode.build();
+			return true;
 		}
 		return false;
 	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		if(mode.isActive()) {
-			mode.calculateCurrentObjectPosition(screenX, screenY);
-			
-			if(mode.isAvailable())
-				mode.getCurrentObject().setColor(Color.GREEN);
-			else
-				mode.getCurrentObject().setColor(Color.RED);
-		}
+		if(mode.constructionIsValid())
+			mode.getCurrentObject().setColor(Color.GREEN);
+		else
+			mode.getCurrentObject().setColor(Color.RED);
 		return false;
 	}
 }

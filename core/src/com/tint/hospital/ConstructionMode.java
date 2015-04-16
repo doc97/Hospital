@@ -20,8 +20,10 @@ import com.tint.hospital.utils.LoggingSystem;
 public class ConstructionMode {
 	
 	private Room[] templates;
+	public ConstructionInput input;
 	private TintedRenderObject currentRenderObject;
 	private RenderObject background;
+	private final Vector3 translationVector = new Vector3();
 	public int currentX, currentY;
 	private int currentIndex;
 	private boolean active;
@@ -32,11 +34,17 @@ public class ConstructionMode {
 				-Camera.getCamera().viewportWidth / 2, -Camera.getCamera().viewportHeight / 2,
 				(int) Camera.getCamera().viewportWidth, (int) Camera.getCamera().viewportHeight);
 		
+		input = new ConstructionInput(this);
+		
 		// Loading templates from file
 		templates = loadRoomsFromJson("data/game_data.json");
-		
-		// Creating input handle
-		Root.INSTANCE.input.addProcessor(new ConstructionInput(this));
+	}
+	
+	public void update() {
+		if(!active)
+			Root.INSTANCE.input.removeProcessor(input);
+		else
+			translateModeToWorldPos(Gdx.input.getX(), Gdx.input.getY());
 	}
 	
 	private Room[] loadRoomsFromJson(String filename) {
@@ -54,7 +62,9 @@ public class ConstructionMode {
 	
 	public void enter() {
 		active = true;
+		currentIndex = -1;
 		Root.INSTANCE.renderSystem.addObject(background, 3);
+		Root.INSTANCE.input.addProcessor(input);
 	}
 	
 	public void exit() {
@@ -64,9 +74,9 @@ public class ConstructionMode {
 	}
 	
 	public void build() {
-		if(isActive()) {
+		if(active) {
 			// Checking if intersecting with any other rooms
-			if(isAvailable()) {
+			if(constructionIsValid()) {
 				try {
 					Root.INSTANCE.building.addRoom(getRoom(currentIndex));
 					selectBuilding(currentIndex);
@@ -80,7 +90,10 @@ public class ConstructionMode {
 				
 				LoggingSystem.log("Construction", "Constructed: " + templates[currentIndex].toString());
 			} else {
-				LoggingSystem.log("Construction", "Couldn't construct: " + templates[currentIndex].toString() + " because inavailable");
+				if(currentIndex < 0 || currentIndex >= templates.length)
+					LoggingSystem.log("Construction", "Couldn't construct: No constructionobject selected");
+				else
+					LoggingSystem.log("Construction", "Couldn't construct: " + templates[currentIndex].toString() + " because inavailable");
 			}
 		}
 	}
@@ -99,10 +112,10 @@ public class ConstructionMode {
 			currentRenderObject.setSize(templates[currentIndex].width * RenderSystem.TILE_SIZE, templates[currentIndex].height * RenderSystem.TILE_SIZE);
 			
 			// Create a ghost and set its position
-			calculateCurrentObjectPosition(Gdx.input.getX(), Gdx.input.getY());
+			translateModeToWorldPos(Gdx.input.getX(), Gdx.input.getY());
 			
 			// Set initial color on render object
-			if(isAvailable())
+			if(constructionIsValid())
 				currentRenderObject.setColor(Color.GREEN);
 			else
 				currentRenderObject.setColor(Color.RED);
@@ -112,14 +125,24 @@ public class ConstructionMode {
 		}
 	}
 	
-	public void calculateCurrentObjectPosition(int screenX, int screenY) {
-		Vector3 worldPos = Camera.getCamera().unproject(new Vector3(screenX, screenY, 0));
-		currentRenderObject.setCenterPosition(worldPos.x, worldPos.y);
-		currentX = currentRenderObject.x / RenderSystem.TILE_SIZE;
-		currentY = currentRenderObject.y / RenderSystem.TILE_SIZE;
+	public void translateModeToWorldPos(int screenX, int screenY) {
+		translationVector.set(screenX, screenY, 0);
+		Vector3 worldPos = Camera.getCamera().unproject(translationVector);
+		currentRenderObject.setPosition(
+				(int) (Math.floor(worldPos.x / RenderSystem.TILE_SIZE)) * RenderSystem.TILE_SIZE,
+				(int) (Math.floor(worldPos.y / RenderSystem.TILE_SIZE)) * RenderSystem.TILE_SIZE);
+		background.setPosition(
+				(int) (-Camera.getCamera().viewportWidth / 2 + Camera.getCamera().position.x),
+				(int) (-Camera.getCamera().viewportHeight / 2 + Camera.getCamera().position.y)
+				);
+		currentX = (int) (currentRenderObject.x / RenderSystem.TILE_SIZE);
+		currentY = (int) (currentRenderObject.y / RenderSystem.TILE_SIZE);
 	}
 	
-	public boolean isAvailable() {
+	public boolean constructionIsValid() {
+		if(currentIndex < 0 || currentIndex >= templates.length)
+			return false;
+		
 		// Building on ground
 		if(currentY == 0) {
 			if(Root.INSTANCE.building.getRoomAt(currentX - 1, currentY) == null &&
@@ -128,20 +151,15 @@ public class ConstructionMode {
 			}
 		} 
 		
-		int emptyBlocks = 0;
 		for(int i = currentX; i < currentX + templates[currentIndex].width; i++) {
 			for(int j = currentY; j < currentY + templates[currentIndex].height; j++) {
 				// Must not be blocked
-				if(Root.INSTANCE.building.getRoomAt(i, j) != null) {
+				if(Root.INSTANCE.building.getRoomAt(i, j) != null)
 					return false;
-				}
-				
+
 				// Must have full support under room
-				if(currentY > 0 && Root.INSTANCE.building.getRoomAt(i, currentY-1) == null) {
-					if(++emptyBlocks > templates[currentIndex].width / 2f) {
-						return false;
-					}
-				}
+				if(currentY > 0 && Root.INSTANCE.building.getRoomAt(i, currentY-1) == null)
+					return false;
 			}
 		}
 		return true;

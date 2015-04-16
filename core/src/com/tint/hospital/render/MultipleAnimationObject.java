@@ -59,10 +59,5 @@ public class MultipleAnimationObject implements RenderObject {
 	}
 
 	@Override
-	public void setSize(int width, int height) {
-		for(TextureRegion frame : currentAnimation.getKeyFrames()) {
-			frame.setRegionWidth(width);
-			frame.setRegionHeight(height);
-		}
-	}
+	public void setSize(int width, int height) {}
 }

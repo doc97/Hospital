@@ -46,8 +46,7 @@ public class GameState extends ScreenAdapter {
 	
 	@Override
 	public void render(float delta) {
-		Root.INSTANCE.input.updateProcessors();
-		
+		constructionMode.update();
 		Root.INSTANCE.renderSystem.renderObjects(Gdx.graphics.getDeltaTime());
 	}
 

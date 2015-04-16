@@ -33,10 +33,8 @@ public class TintedRenderObject implements RenderObject {
 		renderObject.setPosition(x, y);
 	}
 	
-	public void setCenterPosition(float x, float y) {
-		this.x = (int) ((x + (RenderSystem.TILE_SIZE - width) / 2.0f) / RenderSystem.TILE_SIZE) * RenderSystem.TILE_SIZE;
-		this.y = (int) ((y + (RenderSystem.TILE_SIZE - height) / 2.0f) / RenderSystem.TILE_SIZE) * RenderSystem.TILE_SIZE;
-		renderObject.setPosition(this.x, this.y);
+	public void setCenterPosition(int x, int y) {
+		setPosition(x - width / 2, y - height / 2);
 	}
 	
 	@Override
