@@ -1,6 +1,7 @@
 package com.tint.hospital.rooms;
 
 public enum RoomType {
+	ENTRANCE("entrance", 1, 1),
 	WAITING_ROOM("waiting room", 4, 1),
 	EXAMINATION_ROOM("examination room", 2, 1);
 	

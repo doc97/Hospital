@@ -13,7 +13,7 @@ import com.tint.hospital.rooms.RoomType;
 public class ConstructionInput extends InputAdapter {
 
 	public enum ConstructionKeys {
-		CONSTRUCTION_SLOT1, CONSTRUCTION_SLOT2;
+		CONSTRUCTION_SLOT1, CONSTRUCTION_SLOT2, CONSTRUCTION_SLOT3;
 	}
 	private Map<ConstructionKeys, Integer> keys = new EnumMap<ConstructionKeys, Integer>(ConstructionKeys.class);
 	private ConstructionMode mode;
@@ -22,6 +22,7 @@ public class ConstructionInput extends InputAdapter {
 		this.mode = mode;
 		keys.put(ConstructionKeys.CONSTRUCTION_SLOT1, Keys.NUM_1);
 		keys.put(ConstructionKeys.CONSTRUCTION_SLOT2, Keys.NUM_2);
+		keys.put(ConstructionKeys.CONSTRUCTION_SLOT3, Keys.NUM_3);
 	}
 
 	@Override
@@ -31,6 +32,9 @@ public class ConstructionInput extends InputAdapter {
 			return true;
 		} else if(keycode == keys.get(ConstructionKeys.CONSTRUCTION_SLOT2)) {
 			mode.selectBuilding(RoomType.WAITING_ROOM);
+			return true;
+		} else if(keycode == keys.get(ConstructionKeys.CONSTRUCTION_SLOT3)) {
+			mode.selectBuilding(RoomType.ENTRANCE);
 			return true;
 		}
 		return false;
