@@ -35,7 +35,7 @@ public class Building {
 			adjecent.connectedRooms.add(rpd);
 		}
 		
-		adjecent = getRoomData(getRoomAt(room.x + room.width, room.y));
+		adjecent = getRoomData(getRoomAt(room.x + room.type.width, room.y));
 		if(adjecent != null) {
 			rpd.connectedRooms.add(adjecent);
 			adjecent.connectedRooms.add(rpd);
@@ -47,7 +47,7 @@ public class Building {
 	
 	public Room getRoomAt(int x, int y) {
 		for(RoomPathData rd : rooms) {
-			if(rd.room.x <= x && rd.room.y <= y && rd.room.x + rd.room.width > x && rd.room.y + rd.room.height > y)
+			if(rd.room.x <= x && rd.room.y <= y && rd.room.x + rd.room.type.width > x && rd.room.y + rd.room.type.height > y)
 				return rd.room;
 		}
 		

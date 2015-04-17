@@ -8,6 +8,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.tint.hospital.ConstructionMode;
+import com.tint.hospital.rooms.RoomType;
 
 public class ConstructionInput extends InputAdapter {
 
@@ -26,10 +27,10 @@ public class ConstructionInput extends InputAdapter {
 	@Override
 	public boolean keyUp(int keycode) {
 		if(keycode == keys.get(ConstructionKeys.CONSTRUCTION_SLOT1)) {
-			mode.selectBuilding(0);
+			mode.selectBuilding(RoomType.EXAMINATION_ROOM);
 			return true;
 		} else if(keycode == keys.get(ConstructionKeys.CONSTRUCTION_SLOT2)) {
-			mode.selectBuilding(1);
+			mode.selectBuilding(RoomType.WAITING_ROOM);
 			return true;
 		}
 		return false;

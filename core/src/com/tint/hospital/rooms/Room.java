@@ -1,17 +1,23 @@
 package com.tint.hospital.rooms;
 
 import com.tint.hospital.render.RenderObject;
+import com.tint.hospital.render.RenderSystem;
+import com.tint.hospital.render.TextureObject;
+import com.tint.hospital.utils.Assets;
 
-public abstract class Room {
+
+public class Room {
 
 	public int x, y;
-	public int width, height;
+	public RoomType type;
 	public RenderObject renderObject;
 	
-	public Room(int x, int y, int width, int height) {
+	public Room(RoomType type, int x, int y) {
 		this.x = x;
 		this.y = y;
-		this.width = width;
-		this.height = height;
+		this.type = type;
+		renderObject = new TextureObject(Assets.getTexture(type.name),
+				type.width * RenderSystem.TILE_SIZE, type.height * RenderSystem.TILE_SIZE);
+		renderObject.setPosition(x * RenderSystem.TILE_SIZE, y * RenderSystem.TILE_SIZE);
 	}
 }

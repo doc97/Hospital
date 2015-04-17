@@ -1,43 +1,34 @@
 package com.tint.hospital;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
-import com.tint.hospital.data.ConstructionData;
 import com.tint.hospital.input.ConstructionInput;
 import com.tint.hospital.render.RenderObject;
 import com.tint.hospital.render.RenderSystem;
 import com.tint.hospital.render.TextureObject;
 import com.tint.hospital.render.TintedRenderObject;
 import com.tint.hospital.rooms.Room;
-import com.tint.hospital.states.GameState;
+import com.tint.hospital.rooms.RoomType;
 import com.tint.hospital.utils.Assets;
 import com.tint.hospital.utils.LoggingSystem;
 
 public class ConstructionMode {
 	
-	private Room[] templates;
+	private RoomType currentType;
 	public ConstructionInput input;
 	private TintedRenderObject currentRenderObject;
 	private RenderObject background;
 	private final Vector3 translationVector = new Vector3();
 	public int currentX, currentY;
-	private int currentIndex;
 	private boolean active;
 	
 	public void create() {
-		currentRenderObject = new TintedRenderObject(new TextureObject(Assets.getTexture("construction object"), 0, 0, 0, 0), Color.GREEN);
+		currentRenderObject = new TintedRenderObject(new TextureObject(Assets.getTexture("construction object"), 0, 0), Color.GREEN);
 		background = new TextureObject(Assets.getTexture("construction object"),
-				-Camera.getCamera().viewportWidth / 2, -Camera.getCamera().viewportHeight / 2,
 				(int) Camera.getCamera().viewportWidth, (int) Camera.getCamera().viewportHeight);
 		
 		input = new ConstructionInput(this);
-		
-		// Loading templates from file
-		templates = loadRoomsFromJson("data/game_data.json");
 	}
 	
 	public void update() {
@@ -47,22 +38,8 @@ public class ConstructionMode {
 			translateModeToWorldPos(Gdx.input.getX(), Gdx.input.getY());
 	}
 	
-	private Room[] loadRoomsFromJson(String filename) {
-		List<Room> objects = new ArrayList<Room>();
-		ConstructionData data = GameState.gameData.constructionData;
-		
-		for(int i = 0; i < data.rooms.size; i++) {
-			Room room = data.rooms.get(i);
-			room.renderObject.setSize(room.width, room.height);
-			objects.add(room);
-		}
-		
-		return objects.toArray(new Room[objects.size()]);
-	}
-	
 	public void enter() {
 		active = true;
-		currentIndex = -1;
 		Root.INSTANCE.renderSystem.addObject(background, 3);
 		Root.INSTANCE.input.addProcessor(input);
 	}
@@ -77,52 +54,36 @@ public class ConstructionMode {
 		if(active) {
 			// Checking if intersecting with any other rooms
 			if(constructionIsValid()) {
-				try {
-					Root.INSTANCE.building.addRoom(getRoom(currentIndex));
-					selectBuilding(currentIndex);
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-					LoggingSystem.log("Construction", "Couldn't construct: " + templates[currentIndex].toString());
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-					LoggingSystem.log("Construction", "Couldn't construct: " + templates[currentIndex].toString());
-				}
-				
-				LoggingSystem.log("Construction", "Constructed: " + templates[currentIndex].toString());
+				Root.INSTANCE.building.addRoom(getRoom(currentType));
+				selectBuilding(currentType);
+				LoggingSystem.log("Construction", "Constructed: " + currentType.toString());
 			} else {
-				if(currentIndex < 0 || currentIndex >= templates.length)
+				if(currentType == null)
 					LoggingSystem.log("Construction", "Couldn't construct: No constructionobject selected");
 				else
-					LoggingSystem.log("Construction", "Couldn't construct: " + templates[currentIndex].toString() + " because inavailable");
+					LoggingSystem.log("Construction", "Couldn't construct: " + currentType.toString() + " because inavailable");
 			}
 		}
 	}
 	
-	public void selectBuilding(int index) {
+	public void selectBuilding(RoomType type) {
 		// Removes earlier ghost
 		Root.INSTANCE.renderSystem.removeObject(currentRenderObject, 4);
 		
-		if(index < templates.length && index >= 0) {
-			currentIndex = index;
-			
-			// Create render object
-			currentRenderObject = new TintedRenderObject(templates[index].renderObject, Color.GREEN);
-			
-			// Sets current object attributes to match those of the object at specific index
-			currentRenderObject.setSize(templates[currentIndex].width * RenderSystem.TILE_SIZE, templates[currentIndex].height * RenderSystem.TILE_SIZE);
-			
-			// Create a ghost and set its position
-			translateModeToWorldPos(Gdx.input.getX(), Gdx.input.getY());
-			
-			// Set initial color on render object
-			if(constructionIsValid())
-				currentRenderObject.setColor(Color.GREEN);
-			else
-				currentRenderObject.setColor(Color.RED);
-			
-			// Add render objects
-			Root.INSTANCE.renderSystem.addObject(currentRenderObject, 4);
-		}
+		currentType = type;
+		currentRenderObject = new TintedRenderObject(getRoom(currentType).renderObject, Color.GREEN);
+		
+		// Positions mode objects properly
+		translateModeToWorldPos(Gdx.input.getX(), Gdx.input.getY());
+		
+		// Set initial color on render object
+		if(constructionIsValid())
+			currentRenderObject.setColor(Color.GREEN);
+		else
+			currentRenderObject.setColor(Color.RED);
+		
+		// Add render objects
+		Root.INSTANCE.renderSystem.addObject(currentRenderObject, 4);
 	}
 	
 	public void translateModeToWorldPos(int screenX, int screenY) {
@@ -140,19 +101,19 @@ public class ConstructionMode {
 	}
 	
 	public boolean constructionIsValid() {
-		if(currentIndex < 0 || currentIndex >= templates.length)
+		if(currentType == null)
 			return false;
 		
 		// Building on ground
 		if(currentY == 0) {
 			if(Root.INSTANCE.building.getRoomAt(currentX - 1, currentY) == null &&
-					Root.INSTANCE.building.getRoomAt(currentX + templates[currentIndex].width, currentY) == null) {
+					Root.INSTANCE.building.getRoomAt(currentX + currentType.width, currentY) == null) {
 				return false;
 			}
 		} 
 		
-		for(int i = currentX; i < currentX + templates[currentIndex].width; i++) {
-			for(int j = currentY; j < currentY + templates[currentIndex].height; j++) {
+		for(int i = currentX; i < currentX + currentType.width; i++) {
+			for(int j = currentY; j < currentY + currentType.height; j++) {
 				// Must not be blocked
 				if(Root.INSTANCE.building.getRoomAt(i, j) != null)
 					return false;
@@ -165,16 +126,8 @@ public class ConstructionMode {
 		return true;
 	}
 	
-	public Room getRoom(int currIndex) throws InstantiationException, IllegalAccessException {
-		Room newRoom = templates[currIndex].getClass().newInstance();
-		newRoom.x = currentX;
-		newRoom.y = currentY;
-		newRoom.width = templates[currentIndex].width;
-		newRoom.height = templates[currentIndex].height;
-		newRoom.renderObject.setPosition(currentX * RenderSystem.TILE_SIZE, currentY * RenderSystem.TILE_SIZE);
-		newRoom.renderObject.setSize(currentRenderObject.width, currentRenderObject.height);
-		
-		return newRoom;
+	public Room getRoom(RoomType currentType) {
+		return new Room(currentType, currentX, currentY);
 	}
 	
 	public TintedRenderObject getCurrentObject() { return currentRenderObject; }

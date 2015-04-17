@@ -10,11 +10,9 @@ public class TextureObject implements RenderObject {
 	private Transform transform;
 	private int width, height;
 	
-	public TextureObject(TextureRegion textureRegion, float x, float y, int width, int height) {
+	public TextureObject(TextureRegion textureRegion, int width, int height) {
 		this.textureRegion = textureRegion;
 		transform = new Transform();
-		transform.setX(x);
-		transform.setY(y);
 		this.width = width;
 		this.height = height;
 	}
