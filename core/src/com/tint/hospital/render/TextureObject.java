@@ -34,6 +34,10 @@ public class TextureObject implements RenderObject {
 		this.height = height;
 	}
 
+	public void flipTexture(boolean x, boolean y) {
+		textureRegion.flip(x, y);
+	}
+	
 	public void setTexture(TextureRegion region) {
 		textureRegion = region;
 	}

@@ -11,7 +11,7 @@ public class TintedRenderObject implements RenderObject {
 
 	public int x, y;
 	public int width, height;
-	private RenderObject renderObject;
+	public RenderObject renderObject;
 	private Color color;
 	
 	public TintedRenderObject(RenderObject renderObject, Color color) {

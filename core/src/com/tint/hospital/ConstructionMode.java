@@ -123,6 +123,35 @@ public class ConstructionMode {
 					return false;
 			}
 		}
+		
+		// Custom code
+		switch(currentType) {
+		case ENTRANCE:
+			if(currentY > 0)
+				return false;
+			break;
+		case EXAMINATION_ROOM:
+			break;
+		case STAIRS:
+			Room left = Root.INSTANCE.building.getRoomAt(currentX - 1, currentY);
+			Room right = Root.INSTANCE.building.getRoomAt(currentX + currentType.width, currentY);
+			
+			// Stairs must have horizontal support (cannot be placed on top)
+			if(left == null && right == null) {
+				return false;
+			}
+			
+			// Stairs must not be placed beside other stairs
+			if(left != null && left.type == RoomType.STAIRS && right != null && right.type == RoomType.STAIRS) {
+				return false;
+			}
+			break;
+		case WAITING_ROOM:
+			break;
+		default:
+			break;
+		}
+		
 		return true;
 	}
 	
