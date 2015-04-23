@@ -1,17 +1,29 @@
 package com.tint.hospital.ai;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 import java.util.Stack;
 
 import com.tint.hospital.Building.RoomPathData;
 import com.tint.hospital.Root;
 import com.tint.hospital.rooms.Room;
+import com.tint.hospital.rooms.RoomType;
 
 public class BuildingPathfinder {
-	public class Path {
-		private List<Room> rooms = new ArrayList<Room>();
+	public static class Path {
+		private List<Room> rooms;
+		
+		public Path() {
+			rooms = new ArrayList<Room>();
+		}
+		
+		public Path(Room room) {
+			this.rooms = new ArrayList<Room>();
+			this.rooms.add(room);
+		}
 		
 		public Room get(int index) {
 			return rooms.get(index);
@@ -24,6 +36,7 @@ public class BuildingPathfinder {
 
 	private List<RoomPathData> closed = new ArrayList<RoomPathData>();
 	private Stack<RoomPathData> open = new Stack<RoomPathData>();
+	private Deque<RoomPathData> openQueue = new ArrayDeque<RoomPathData>();
 	
 	public Path getPath(Room start, Room end) {
 		
@@ -71,6 +84,40 @@ public class BuildingPathfinder {
 					open.add(child);
 						
 				}
+			}
+		}
+		
+		return null;
+	}
+	
+	public Path findClosest(Room start, RoomType roomType) {
+		if(start == null) return null;
+		
+		if(start.type == roomType) {
+			Path path = new Path();
+			path.rooms.add(start);
+			return path;
+		}
+		
+		openQueue.clear();
+		closed.clear();
+		
+		openQueue.add(Root.INSTANCE.building.getRoomData(start));
+		
+		while(!openQueue.isEmpty()) {
+			RoomPathData current = openQueue.pop();
+			
+			if(current.room.type == roomType)
+				return constructPath(start, current);
+			
+			closed.add(current);
+			
+			
+			for(RoomPathData child : current.connectedRooms) {
+				if(closed.contains(child))
+					continue;
+				
+				openQueue.add(child);
 			}
 		}
 		

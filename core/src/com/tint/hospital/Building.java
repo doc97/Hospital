@@ -61,4 +61,8 @@ public class Building {
 		}
 		return null;
 	}
+
+	public List<RoomPathData> getRooms() {
+		return rooms;
+	}
 }

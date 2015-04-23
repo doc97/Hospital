@@ -23,8 +23,11 @@ public class FiniteStateMachine {
 	
 	public void pushState(AiState state) {
 		stateStack.push(state);
-		state.setFSM(this);
 		state.enter();
+	}
+	
+	public void pushNoEnter(AiState state) {
+		stateStack.push(state);
 	}
 	
 	public void popState() {

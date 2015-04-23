@@ -3,10 +3,12 @@ package com.tint.hospital;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.tint.hospital.ai.FiniteStateMachine;
 import com.tint.hospital.render.MultipleAnimationObject;
+import com.tint.hospital.render.RenderSystem;
+import com.tint.hospital.rooms.Room;
 import com.tint.hospital.utils.Assets;
 
 public class Human {
-	private Transform transform = new Transform();
+	public Transform transform = new Transform();
 	private FiniteStateMachine fsm;
 	public MultipleAnimationObject animationObject;
 	
@@ -19,5 +21,10 @@ public class Human {
 	
 	public void update() {
 		fsm.update();
+	}
+	
+	public Room getCurrentRoom() {
+		return Root.INSTANCE.building.getRoomAt((int) Math.floor(transform.getX() / RenderSystem.TILE_SIZE), 
+												(int) Math.floor(transform.getY() / RenderSystem.TILE_SIZE));
 	}
 }

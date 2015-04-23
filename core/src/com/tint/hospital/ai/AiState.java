@@ -1,10 +1,15 @@
 package com.tint.hospital.ai;
 
-public interface AiState {
+public abstract class AiState {
 
-	public void update();
-	public void enter();
-	public void exit();
-	public void setFSM(FiniteStateMachine fsm);
+	protected FiniteStateMachine fsm;
+	
+	public AiState(FiniteStateMachine fsm) {
+		this.fsm = fsm;
+	}
+
+	public void update() {}
+	public void enter() {}
+	public void exit() {}
 
 }
