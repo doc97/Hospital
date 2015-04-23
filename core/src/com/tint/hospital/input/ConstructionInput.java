@@ -35,10 +35,10 @@ public class ConstructionInput extends InputAdapter {
 			mode.selectBuilding(RoomType.WAITING_ROOM);
 			return true;
 		} else if(keycode == keys.get(ConstructionKeys.CONSTRUCTION_SLOT3)) {
-			mode.selectBuilding(RoomType.ENTRANCE);
+			mode.selectBuilding(RoomType.RECEPTION);
 			return true;
 		} else if(keycode == keys.get(ConstructionKeys.CONSTRUCTION_SLOT4)) {
-			mode.selectBuilding(RoomType.STAIRS);
+			mode.selectBuilding(RoomType.STAIRS_BOTTOM);
 			return true;
 		}
 		return false;

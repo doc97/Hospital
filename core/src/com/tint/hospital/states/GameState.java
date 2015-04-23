@@ -24,10 +24,13 @@ public class GameState extends ScreenAdapter {
 		LoggingSystem.log("Game", "Loading game....");
 
 		constructionMode.create();
-		
-		Root.INSTANCE.building.addRoom(new Room(RoomType.EXAMINATION_ROOM, 0, 0));
-		
+
 		// TODO temporary loading code
+		Root.INSTANCE.building.addRoom(new Room(RoomType.RECEPTION, 0, 0));
+		Root.INSTANCE.building.addRoom(new Room(RoomType.WAITING_ROOM, 2, 0));
+		Root.INSTANCE.building.addRoom(new Room(RoomType.EXAMINATION_ROOM, 5, 0));
+		// Dev reasons
+		Root.INSTANCE.economySystem.setMoney(10000);
 		Root.INSTANCE.input.addProcessor(new GameInput(constructionMode));
 	}
 	

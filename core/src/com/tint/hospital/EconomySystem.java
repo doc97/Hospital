@@ -2,7 +2,7 @@ package com.tint.hospital;
 
 public class EconomySystem {
 	private int money;
-
+	
 	public int getMoney() {
 		return money;
 	}

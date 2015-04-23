@@ -52,10 +52,10 @@ public class ConstructionUi extends UiBase{
 			}
 		}));
 		
-		TextButton butt = createTextButton("Entrance", width / 10, height * 8 / 10, width / 10, height / 12, new ChangeListener() {
+		TextButton butt = createTextButton("Reception", width / 10, height * 8 / 10, width / 10, height / 12, new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				cm.selectBuilding(RoomType.ENTRANCE);
+				cm.selectBuilding(RoomType.RECEPTION);
 			}
 		});
 		
@@ -78,7 +78,7 @@ public class ConstructionUi extends UiBase{
 			
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				cm.selectBuilding(RoomType.STAIRS);
+				cm.selectBuilding(RoomType.STAIRS_BOTTOM);
 			}
 		});
 		

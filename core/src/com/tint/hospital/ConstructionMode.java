@@ -54,14 +54,35 @@ public class ConstructionMode {
 		if(active) {
 			// Checking if intersecting with any other rooms
 			if(constructionIsValid()) {
+				// Custom code for stairs
+				Room under = Root.INSTANCE.building.getRoomAt(currentX, currentY - 1);
+				if(currentType == RoomType.STAIRS_BOTTOM) {
+					if(under != null) {
+						if(under.type == RoomType.STAIRS_TOP || under.type == RoomType.STAIRS_BOTTOM) {
+							Root.INSTANCE.economySystem.addMoney(-RoomType.STAIRS_TOP.cost);
+							Root.INSTANCE.building.addRoom(getRoom(RoomType.STAIRS_TOP));
+							LoggingSystem.log("Construction", "Constructed: Stair extension");
+							
+							if(under.type == RoomType.STAIRS_TOP)
+								under.changeType(RoomType.STAIRS_MIDDLE);
+							
+							return;
+						}
+						
+					}
+				}
+				
+				Root.INSTANCE.economySystem.addMoney(-currentType.cost);
 				Root.INSTANCE.building.addRoom(getRoom(currentType));
 				selectBuilding(currentType);
 				LoggingSystem.log("Construction", "Constructed: " + currentType.toString());
 			} else {
 				if(currentType == null)
-					LoggingSystem.log("Construction", "Couldn't construct: No constructionobject selected");
+					LoggingSystem.log("Construction", "No constructionobject selected");
+				else if(Root.INSTANCE.economySystem.getMoney() < currentType.cost)
+					LoggingSystem.log("Construction", "Insufficent funds");
 				else
-					LoggingSystem.log("Construction", "Couldn't construct: " + currentType.toString() + " because inavailable");
+					LoggingSystem.log("Construction", "Cannot place " + currentType.toString() + " there");
 			}
 		}
 	}
@@ -103,6 +124,9 @@ public class ConstructionMode {
 	public boolean constructionIsValid() {
 		if(currentType == null)
 			return false;
+
+		if(Root.INSTANCE.economySystem.getMoney() < currentType.cost)
+			return false;
 		
 		// Building on ground
 		if(currentY == 0) {
@@ -126,27 +150,9 @@ public class ConstructionMode {
 		
 		// Custom code
 		switch(currentType) {
-		case ENTRANCE:
+		case RECEPTION:
 			if(currentY > 0)
 				return false;
-			break;
-		case EXAMINATION_ROOM:
-			break;
-		case STAIRS:
-			Room left = Root.INSTANCE.building.getRoomAt(currentX - 1, currentY);
-			Room right = Root.INSTANCE.building.getRoomAt(currentX + currentType.width, currentY);
-			
-			// Stairs must have horizontal support (cannot be placed on top)
-			if(left == null && right == null) {
-				return false;
-			}
-			
-			// Stairs must not be placed beside other stairs
-			if(left != null && left.type == RoomType.STAIRS && right != null && right.type == RoomType.STAIRS) {
-				return false;
-			}
-			break;
-		case WAITING_ROOM:
 			break;
 		default:
 			break;
