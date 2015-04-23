@@ -1,5 +1,6 @@
 package com.tint.hospital;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.tint.hospital.render.RenderSystem;
 import com.tint.hospital.states.StateSystem;
@@ -19,5 +20,6 @@ public enum Root {
 		Camera.setup();
 		stateSystem.create(launcher);
 		renderSystem.create();
+		Gdx.input.setInputProcessor(input);
 	}
 }

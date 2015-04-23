@@ -8,6 +8,6 @@ public class Launcher extends Game {
 	@Override
 	public void create() {
 		Root.INSTANCE.createSystems(this);
-		Root.INSTANCE.stateSystem.enterState(States.GAMESTATE);
+		Root.INSTANCE.stateSystem.enterState(States.MAINMENUSTATE);
 	}
 }

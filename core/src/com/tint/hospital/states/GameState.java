@@ -8,6 +8,8 @@ import com.tint.hospital.data.GameData;
 import com.tint.hospital.input.GameInput;
 import com.tint.hospital.rooms.Room;
 import com.tint.hospital.rooms.RoomType;
+import com.tint.hospital.ui.ConstructionUi;
+import com.tint.hospital.ui.GameUi;
 import com.tint.hospital.utils.LoggingSystem;
 
 
@@ -15,6 +17,8 @@ public class GameState extends ScreenAdapter {
 	
 	private ConstructionMode constructionMode = new ConstructionMode();
 	public static GameData gameData;
+	private GameUi ui = new GameUi(constructionMode);
+	private ConstructionUi cui = new ConstructionUi(constructionMode);
 	
 	public final void loadGame() {
 		LoggingSystem.log("Game", "Loading game....");
@@ -25,13 +29,16 @@ public class GameState extends ScreenAdapter {
 		
 		// TODO temporary loading code
 		Root.INSTANCE.input.addProcessor(new GameInput(constructionMode));
-		Gdx.input.setInputProcessor(Root.INSTANCE.input);
 	}
 	
 	@Override
 	public void render(float delta) {
 		constructionMode.update();
 		Root.INSTANCE.renderSystem.renderObjects(Gdx.graphics.getDeltaTime());
+		if (constructionMode.isActive())
+			cui.draw();
+		else
+			ui.draw();
 	}
 
 	@Override

@@ -41,4 +41,5 @@ public class TextureObject implements RenderObject {
 	public void setTexture(TextureRegion region) {
 		textureRegion = region;
 	}
+
 }
