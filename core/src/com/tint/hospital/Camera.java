@@ -2,6 +2,7 @@ package com.tint.hospital;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.tint.hospital.render.RenderSystem;
 import com.tint.hospital.utils.LoggingSystem;
 
 public class Camera {
@@ -35,18 +36,28 @@ public class Camera {
 	}
 
 	public static void setPosition(float x, float y) {
-		camera.position.x = x;
+		boolean middle = Root.INSTANCE.building.getRoomAt((int) (x / RenderSystem.TILE_SIZE), 0) != null;;
+		
+		if(middle)
+			camera.position.x = x;
 		
 		// Camera has a lower limit
-		if(y >= camera.viewportHeight / 2) {
-			camera.position.y = y;
+		if(y >= camera.zoom * camera.viewportHeight / 2) {
+			// +1 because when moving camera upwards there must be atleast one row of rooms visible
+			int yPos = (int) ((camera.position.y - camera.viewportHeight / 2) / RenderSystem.TILE_SIZE) + (y > camera.position.y ? 1 : 0);
+			for(int i = 0, n = (int) (camera.viewportWidth / RenderSystem.TILE_SIZE); i < n; i++) {
+				if(Root.INSTANCE.building.getRoomAt(i, yPos) != null) {
+					camera.position.y = y;
+					return;
+				}
+			}
 		} else {
-			camera.position.y = camera.viewportHeight / 2;
+			camera.position.y = camera.zoom * camera.viewportHeight / 2;
 		}
 	}
 	
 	public static void setZoom(float zoom) {
-		camera.zoom = zoom;
+		camera.zoom = Math.max(zoom, 0);
 	}
 	
 	public static OrthographicCamera getCamera() { return camera; }

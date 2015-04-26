@@ -56,4 +56,22 @@ public class GameInput extends InputAdapter {
 		}
 		return false;
 	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		float zoom = Camera.getCamera().zoom + amount * 0.1f;
+		
+		if(zoom <= 0.5f) {
+			Camera.setZoom(0.5f);
+		} else if(zoom >= 1.5f) {
+			Camera.setZoom(1.5f);
+		} else {
+			Camera.setZoom(zoom);
+		}
+		
+		constructionMode.background.setSize((int) (Camera.getCamera().zoom * Camera.getCamera().viewportWidth), (int) (Camera.getCamera().zoom * Camera.getCamera().viewportHeight));
+		Camera.addPosition(0, (int) (-zoom * Camera.getCamera().viewportHeight / 2));
+		
+		return true;
+	}
 }

@@ -18,7 +18,7 @@ public class ConstructionMode {
 	private RoomType currentType;
 	public ConstructionInput input;
 	private TintedRenderObject currentRenderObject;
-	private RenderObject background;
+	public RenderObject background;
 	private final Vector3 translationVector = new Vector3();
 	public int currentX, currentY;
 	private boolean active;
@@ -114,8 +114,8 @@ public class ConstructionMode {
 				(int) (Math.floor(worldPos.x / RenderSystem.TILE_SIZE)) * RenderSystem.TILE_SIZE,
 				(int) (Math.floor(worldPos.y / RenderSystem.TILE_SIZE)) * RenderSystem.TILE_SIZE);
 		background.setPosition(
-				(int) (-Camera.getCamera().viewportWidth / 2 + Camera.getCamera().position.x),
-				(int) (-Camera.getCamera().viewportHeight / 2 + Camera.getCamera().position.y)
+				(int) (Camera.getCamera().zoom * (-Camera.getCamera().viewportWidth) / 2 + Camera.getCamera().position.x),
+				(int) (Camera.getCamera().zoom * (-Camera.getCamera().viewportHeight) / 2 + Camera.getCamera().position.y)
 				);
 		currentX = (int) (currentRenderObject.x / RenderSystem.TILE_SIZE);
 		currentY = (int) (currentRenderObject.y / RenderSystem.TILE_SIZE);
