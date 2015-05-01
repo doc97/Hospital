@@ -3,6 +3,7 @@ package com.tint.hospital.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.tint.hospital.ConstructionMode;
+import com.tint.hospital.Human;
 import com.tint.hospital.Root;
 import com.tint.hospital.data.GameData;
 import com.tint.hospital.input.GameInput;
@@ -29,6 +30,7 @@ public class GameState extends ScreenAdapter {
 		Root.INSTANCE.building.addRoom(new Room(RoomType.RECEPTION, 0, 0));
 		Root.INSTANCE.building.addRoom(new Room(RoomType.WAITING_ROOM, 2, 0));
 		Root.INSTANCE.building.addRoom(new Room(RoomType.EXAMINATION_ROOM, 5, 0));
+		Root.INSTANCE.humanSystem.hireDoctor(new Human(0, 0));
 		// Dev reasons
 		Root.INSTANCE.economySystem.setMoney(10000);
 		Root.INSTANCE.input.addProcessor(new GameInput(constructionMode));
@@ -37,6 +39,7 @@ public class GameState extends ScreenAdapter {
 	@Override
 	public void render(float delta) {
 		constructionMode.update();
+		Root.INSTANCE.humanSystem.update();
 		Root.INSTANCE.renderSystem.renderObjects(Gdx.graphics.getDeltaTime());
 		if (constructionMode.isActive())
 			cui.draw();

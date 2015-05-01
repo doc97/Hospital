@@ -3,17 +3,20 @@ package com.tint.hospital.input;
 import java.util.EnumMap;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector3;
 import com.tint.hospital.Camera;
 import com.tint.hospital.ConstructionMode;
+import com.tint.hospital.Human;
+import com.tint.hospital.Root;
 
 public class GameInput extends InputAdapter {
 
 	public enum GameKeys {
-		CONSTRUCTION_MODE;
+		CONSTRUCTION_MODE, CREATE_PATIENT, HIRE_DOCTOR;
 	}
 	private Map<GameKeys, Integer> keys = new EnumMap<GameKeys, Integer>(GameKeys.class);
 	private int touchBtn;
@@ -25,6 +28,8 @@ public class GameInput extends InputAdapter {
 		
 		// TODO Hardcoded values
 		keys.put(GameKeys.CONSTRUCTION_MODE, Keys.C);
+		keys.put(GameKeys.CREATE_PATIENT, Keys.A);
+		keys.put(GameKeys.HIRE_DOCTOR, Keys.S);
 	}
 
 	@Override
@@ -34,6 +39,12 @@ public class GameInput extends InputAdapter {
 				constructionMode.exit();
 			else
 				constructionMode.enter();
+		} else if(keys.get(GameKeys.CREATE_PATIENT) == keycode) {
+			Vector3 pos = Camera.getCamera().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+			Root.INSTANCE.humanSystem.retrievePatient(new Human((int) pos.x, (int) pos.y));
+		} else if(keys.get(GameKeys.HIRE_DOCTOR) == keycode) {
+			Vector3 pos = Camera.getCamera().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+			Root.INSTANCE.humanSystem.hireDoctor(new Human((int) pos.x, (int) pos.y));
 		}
 		return false;
 	}

@@ -12,10 +12,12 @@ public class Human {
 	private FiniteStateMachine fsm;
 	public MultipleAnimationObject animationObject;
 	
-	public Human() {
+	public Human(int x, int y) {
 		Animation anim = Assets.getAnimation("male_standing");
+		transform.setX(x);
+		transform.setY(y);
 		animationObject = new MultipleAnimationObject(new OffsetTransform(transform, -32, 0), anim);
-		
+		fsm = new FiniteStateMachine(this, null);
 		Root.INSTANCE.renderSystem.addObject(animationObject, 3);
 	}
 	

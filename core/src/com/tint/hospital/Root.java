@@ -13,6 +13,7 @@ public enum Root {
 	public final StateSystem stateSystem = new StateSystem();
 	public final Building building = new Building();
 	public final EconomySystem economySystem = new EconomySystem();
+	public final HumanSystem humanSystem = new HumanSystem();
 	public final InputMultiplexer input = new InputMultiplexer();
 	
 	public final void createSystems(Launcher launcher) {
