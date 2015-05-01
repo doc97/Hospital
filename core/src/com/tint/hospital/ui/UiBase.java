@@ -8,14 +8,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.tint.hospital.Root;
 
 public abstract class UiBase {
 	
-	protected final Stage stage = new Stage(new ScreenViewport());
+	protected final Stage stage = new Stage();
+	protected static Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 	
 	protected ImageTextButton createImageTextButton(String text, float x, float y, float width, float height, ChangeListener listener){
-		ImageTextButton b = new ImageTextButton(text, new Skin(Gdx.files.internal("ui/uiskin.json")));
+		ImageTextButton b = new ImageTextButton(text, skin);
 		b.setX(x);
 		b.setY(y);
 		b.setWidth(width);
@@ -25,7 +26,7 @@ public abstract class UiBase {
 	}
 	
 	protected TextButton createTextButton(String text, float x, float y, float width, float height, ChangeListener listener){
-		TextButton b = new TextButton(text,new Skin(Gdx.files.internal("ui/uiskin.json")));
+		TextButton b = new TextButton(text,skin);
 		b.setX(x);
 		b.setY(y);
 		b.setWidth(width);
@@ -35,7 +36,7 @@ public abstract class UiBase {
 	}
 	
 	protected Label CreateLabel(String text, float x, float y, float width, float height){
-		Label l = new Label(text, new Skin(Gdx.files.internal("ui/uiskin.json")));
+		Label l = new Label(text, skin);
 		l.setX(x);
 		l.setY(y);
 		l.setWidth(width);
@@ -44,7 +45,7 @@ public abstract class UiBase {
 	}
 	
 	protected void addCheckbox(String text, float x, float y, float width, float height, ChangeListener changeListener){
-		CheckBox c = new CheckBox(text, new Skin(Gdx.files.internal("ui/uiskin.json")));
+		CheckBox c = new CheckBox(text, skin);
 		c.addListener(changeListener);
 		c.setX(x);
 		c.setY(y);
@@ -63,6 +64,12 @@ public abstract class UiBase {
 		stage.dispose();
 	}
 	
+	public void enter(){
+		Root.INSTANCE.input.addProcessor(0, stage);
+	}
 	
+	public void exit(){
+		Root.INSTANCE.input.removeProcessor(stage);
+	}
 	
 }

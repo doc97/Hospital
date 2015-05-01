@@ -9,7 +9,6 @@ import com.tint.hospital.states.StateSystem.States;
 public class MainMenuUi extends UiBase{
 	
 	public MainMenuUi(){
-		Root.INSTANCE.input.addProcessor(stage);
 		stage.addActor(createTextButton("New Game", Gdx.graphics.getWidth() / 2 - 50, Gdx.graphics.getHeight() * 2 / 3 - 25, 100, 50, new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {

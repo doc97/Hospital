@@ -18,6 +18,10 @@ public class MainMenuState extends ScreenAdapter{
 	@Override
 	public void show() {
 		Gdx.gl20.glClearColor(0.42f, 0.71f, 1f, 1f);
+		ui.enter();
 	}
 	
+	public void hide(){
+		ui.exit();
+	}
 }

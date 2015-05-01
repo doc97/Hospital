@@ -10,6 +10,7 @@ import com.tint.hospital.render.TextureObject;
 import com.tint.hospital.render.TintedRenderObject;
 import com.tint.hospital.rooms.Room;
 import com.tint.hospital.rooms.RoomType;
+import com.tint.hospital.ui.ConstructionUi;
 import com.tint.hospital.utils.Assets;
 import com.tint.hospital.utils.LoggingSystem;
 
@@ -22,6 +23,7 @@ public class ConstructionMode {
 	private final Vector3 translationVector = new Vector3();
 	public int currentX, currentY;
 	private boolean active;
+	public ConstructionUi cui = new ConstructionUi(this);
 	
 	public void create() {
 		currentRenderObject = new TintedRenderObject(new TextureObject(Assets.getTexture("construction object"), 0, 0), Color.GREEN);
@@ -34,20 +36,26 @@ public class ConstructionMode {
 	public void update() {
 		if(!active)
 			Root.INSTANCE.input.removeProcessor(input);
-		else
+		else {
 			translateModeToWorldPos(Gdx.input.getX(), Gdx.input.getY());
+			cui.draw();
+		}
 	}
 	
 	public void enter() {
 		active = true;
+		cui.enter();
 		Root.INSTANCE.renderSystem.addObject(background, 3);
 		Root.INSTANCE.input.addProcessor(input);
+		
 	}
 	
 	public void exit() {
 		active = false;
+		cui.exit();
 		Root.INSTANCE.renderSystem.removeObject(background, 3);
 		Root.INSTANCE.renderSystem.removeObject(currentRenderObject, 4);
+		
 	}
 	
 	public void build() {
@@ -90,6 +98,11 @@ public class ConstructionMode {
 	public void selectBuilding(RoomType type) {
 		// Removes earlier ghost
 		Root.INSTANCE.renderSystem.removeObject(currentRenderObject, 4);
+		
+		if ((currentType == type && !Thread.currentThread().getStackTrace()[2].getClassName().equals(ConstructionMode.class.getName())) || type == null){
+			currentType = null;
+			return;
+		}
 		
 		currentType = type;
 		currentRenderObject = new TintedRenderObject(getRoom(currentType).renderObject, Color.GREEN);
