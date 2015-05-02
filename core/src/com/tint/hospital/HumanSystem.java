@@ -38,6 +38,7 @@ public class HumanSystem {
 	
 	public void fireDoctor(Human doctor) {
 		doctors.removeValue(doctor, false);
+		Root.INSTANCE.renderSystem.removeObject(doctor.animationObject, 3);
 		LoggingSystem.log("HumanSystem", "Doctor fired");
 	}
 	
@@ -48,6 +49,18 @@ public class HumanSystem {
 	
 	public void removePatient(Human patient) {
 		patients.removeValue(patient, false);
+		Root.INSTANCE.renderSystem.removeObject(patient.animationObject, 3);
 		LoggingSystem.log("HumanSystem", "Patient going home");
+	}
+
+	public void resetHumans() {
+		for (Human h : doctors){
+			Root.INSTANCE.renderSystem.removeObject(h.animationObject, 3);
+		}
+		for (Human h : patients){
+			Root.INSTANCE.renderSystem.removeObject(h.animationObject, 3);
+		}
+		patients.clear();
+		doctors.clear();
 	}
 }

@@ -53,10 +53,9 @@ public class GameState extends ScreenAdapter {
 	}
 	
 	public void hide(){
-		for (RoomPathData rpd : Root.INSTANCE.building.getRooms()){
-			Root.INSTANCE.renderSystem.removeObject(rpd.room.renderObject, 2);
-		}
 		Root.INSTANCE.input.clear();
+		Root.INSTANCE.building.resetBuilding();
+		Root.INSTANCE.humanSystem.resetHumans();
 		ui.exit();
 	}
 }

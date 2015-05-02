@@ -65,4 +65,12 @@ public class Building {
 	public List<RoomPathData> getRooms() {
 		return rooms;
 	}
+	
+	public void resetBuilding(){
+		for (RoomPathData rpd : rooms){
+			Root.INSTANCE.renderSystem.removeObject(rpd.room.renderObject, 2);
+		}
+		rooms.clear();
+	}
+	
 }
