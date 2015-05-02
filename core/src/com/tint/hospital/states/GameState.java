@@ -56,6 +56,7 @@ public class GameState extends ScreenAdapter {
 		for (RoomPathData rpd : Root.INSTANCE.building.getRooms()){
 			Root.INSTANCE.renderSystem.removeObject(rpd.room.renderObject, 2);
 		}
+		Root.INSTANCE.input.clear();
 		ui.exit();
 	}
 }

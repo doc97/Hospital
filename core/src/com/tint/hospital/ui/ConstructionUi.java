@@ -30,7 +30,7 @@ public class ConstructionUi extends UiBase{
 		sp.setFadeScrollBars(false);
 		sp.setScrollBarPositions(false, true);
 		
-		sp.setColor(1, 1, 1, 1);
+		sp.setColor(1, 1, 1, 0.85f);
 		table.setColor(1, 1, 1, 1);
 		buttons = new ButtonGroup<>();
 		

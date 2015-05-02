@@ -44,18 +44,14 @@ public class ConstructionMode {
 	
 	public void enter() {
 		active = true;
-		cui.enter();
 		Root.INSTANCE.renderSystem.addObject(background, 3);
 		Root.INSTANCE.input.addProcessor(input);
-		
 	}
 	
 	public void exit() {
 		active = false;
-		cui.exit();
 		Root.INSTANCE.renderSystem.removeObject(background, 3);
 		Root.INSTANCE.renderSystem.removeObject(currentRenderObject, 4);
-		
 	}
 	
 	public void build() {

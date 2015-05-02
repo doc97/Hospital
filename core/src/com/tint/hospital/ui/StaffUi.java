@@ -28,7 +28,7 @@ public class StaffUi extends UiBase {
 		sp.setBounds(width * 4 / 5, 0, width / 5, height * 9 / 10);
 		sp.setFadeScrollBars(false);
 		sp.setScrollBarPositions(false, true);
-		sp.setColor(1, 1, 1, 1);
+		sp.setColor(1, 1, 1, 0.85f);
 		
 		stage.addActor(sp);
 		

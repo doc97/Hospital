@@ -1,5 +1,6 @@
 package com.tint.hospital.ui;
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -17,6 +18,7 @@ public class GameUi extends UiBase{
 	private Table topBar;
 	private StaffUi sui = new StaffUi();
 	private Action updateAction;
+	private boolean skip;
 	
 	public GameUi(final ConstructionMode cm){
 		
@@ -44,24 +46,49 @@ public class GameUi extends UiBase{
 		});
 		stage.addActor(l);
 		
-		TextButton tb = createTextButton("Build", width * 25 / 28, height * 147 / 160, width  / 14, height / 16, new ChangeListener() {
+		final TextButton tbb = createTextButton("Build", width * 25 / 28, height * 147 / 160, width  / 14, height / 16, new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				if (skip){
+					skip = false;
+					return;
+				}
 				if(cm.isActive()){
 					cm.exit();
+					cm.cui.exit();
 					((TextButton)actor).setText("Build");
 				}
 				else {
 					cm.enter();
+					cm.cui.enter();
 					((TextButton)actor).setText("Done");
 				}
 			}
 		});
 		
-		stage.addActor(tb);
-		buttons.add(tb);
+		tbb.addAction(new Action() {
+			
+			@Override
+			public boolean act(float delta) {
+				if (cm.isActive() && tbb.getText().charAt(0) == 'B'){
+					tbb.setText("Done");
+					skip = true;
+					cm.cui.enter();
+					tbb.toggle();
+				} else if (!cm.isActive() && tbb.getText().charAt(0) == 'D'){
+					tbb.setText("Build");
+					skip = true;
+					cm.cui.exit();
+					tbb.toggle();
+				}
+				return false;
+			}
+		});
 		
-		tb = createTextButton("Staff", width * 11 / 14, height * 147 / 160, width / 14, height / 16, new ChangeListener() {
+		stage.addActor(tbb);
+		buttons.add(tbb);
+		
+		TextButton tb = createTextButton("Staff", width * 11 / 14, height * 147 / 160, width / 14, height / 16, new ChangeListener() {
 			
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
