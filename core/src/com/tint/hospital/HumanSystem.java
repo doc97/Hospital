@@ -1,6 +1,7 @@
 package com.tint.hospital;
 
 import com.badlogic.gdx.utils.Array;
+import com.tint.hospital.ai.PatientAi;
 import com.tint.hospital.utils.LoggingSystem;
 
 public class HumanSystem {
@@ -10,15 +11,13 @@ public class HumanSystem {
 	private int spawnTimer;
 	private int spawnRate = 3600; // 60 = 1s
 	
-	public HumanSystem() {
-		
-	}
-	
 	public void update() {
 		// Update spawning of new patients
 		spawnTimer++;
 		if(spawnTimer >= spawnRate) {
-			retrievePatient(new Human((int) (Math.random() * 40 - Camera.getCamera().viewportWidth / 2.0f), 0));
+			Human human = new Human((int) (Math.random() * 40 - Camera.getCamera().viewportWidth / 2.0f), 0);
+			human.getFSM().pushState(new PatientAi(human.getFSM()));
+			retrievePatient(human);
 			spawnTimer = 0;
 		}
 		

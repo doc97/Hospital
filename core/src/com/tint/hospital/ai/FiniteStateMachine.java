@@ -2,17 +2,17 @@ package com.tint.hospital.ai;
 
 import java.util.Stack;
 
+import com.badlogic.gdx.ai.msg.Telegram;
+import com.badlogic.gdx.ai.msg.Telegraph;
 import com.tint.hospital.Human;
 
-public class FiniteStateMachine {
+public class FiniteStateMachine implements Telegraph {
 	private Stack<AiState> stateStack;
 	private Human owner;
 	
-	public FiniteStateMachine(Human owner, AiState startingState) {
+	public FiniteStateMachine(Human owner) {
 		this.owner = owner;
 		stateStack = new Stack<AiState>();
-		if(startingState != null)
-			pushState(startingState);
 	}
 	
 	public void update() {
@@ -43,7 +43,26 @@ public class FiniteStateMachine {
 		return stateStack.size() > 0 ? stateStack.peek() : null;
 	}
 	
+	public AiState getState(int index) {
+		return index < stateStack.size() ? stateStack.get(index) : null;
+	}
+	
+	public int getStateAmount() {
+		return stateStack.size();
+	}
+	
 	public Human getOwner() {
 		return owner;
+	}
+
+	@Override
+	public boolean handleMessage(Telegram msg) {
+		AiState currentState = getCurrentState();
+		if(currentState != null) {
+			currentState.handleMessage(msg);
+			return true;
+		}
+		
+		return false;
 	}
 }

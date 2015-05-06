@@ -1,5 +1,7 @@
 package com.tint.hospital.ai;
 
+import com.badlogic.gdx.ai.msg.Telegram;
+
 public abstract class AiState {
 
 	protected FiniteStateMachine fsm;
@@ -11,5 +13,7 @@ public abstract class AiState {
 	public void update() {}
 	public void enter() {}
 	public void exit() {}
+
+	public void handleMessage(Telegram msg) {}
 
 }
