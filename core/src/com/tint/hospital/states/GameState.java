@@ -3,9 +3,7 @@ package com.tint.hospital.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.tint.hospital.ConstructionMode;
-import com.tint.hospital.Human;
 import com.tint.hospital.Root;
-import com.tint.hospital.Building.RoomPathData;
 import com.tint.hospital.data.GameData;
 import com.tint.hospital.input.GameInput;
 import com.tint.hospital.rooms.Room;
@@ -29,7 +27,6 @@ public class GameState extends ScreenAdapter {
 		Root.INSTANCE.building.addRoom(new Room(RoomType.RECEPTION, 0, 0));
 		Root.INSTANCE.building.addRoom(new Room(RoomType.WAITING_ROOM, 2, 0));
 		Root.INSTANCE.building.addRoom(new Room(RoomType.EXAMINATION_ROOM, 5, 0));
-		Root.INSTANCE.humanSystem.hireDoctor(new Human(0, 0));
 		// Dev reasons
 		Root.INSTANCE.economySystem.setMoney(10000);
 		Root.INSTANCE.input.addProcessor(new GameInput(constructionMode));
@@ -53,6 +50,7 @@ public class GameState extends ScreenAdapter {
 	}
 	
 	public void hide(){
+		constructionMode.selectBuilding(null);
 		Root.INSTANCE.input.clear();
 		Root.INSTANCE.building.resetBuilding();
 		Root.INSTANCE.humanSystem.resetHumans();

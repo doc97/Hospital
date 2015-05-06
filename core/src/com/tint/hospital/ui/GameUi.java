@@ -40,7 +40,7 @@ public class GameUi extends UiBase{
 			
 			@Override
 			public boolean act(float delta) {
-				l.setText("Money: " + Root.INSTANCE.economySystem.getMoney());
+				l.setText("Money: " + Root.INSTANCE.economySystem.getMoney() + "$");
 				return false;
 			}
 		});

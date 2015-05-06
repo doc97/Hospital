@@ -8,6 +8,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.tint.hospital.ConstructionMode;
+import com.tint.hospital.Root;
 import com.tint.hospital.rooms.RoomType;
 
 public class ConstructionInput extends InputAdapter {
@@ -47,7 +48,10 @@ public class ConstructionInput extends InputAdapter {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		if(button == Buttons.RIGHT) {
-			mode.exit();
+			if (mode.getCurrentType() != null)
+				mode.selectBuilding(null);
+			else
+				Root.INSTANCE.building.removeRoom(Root.INSTANCE.building.getRoomAt(mode.currentX, mode.currentY));
 			return true;
 		} else if(button == Buttons.LEFT) {
 			mode.build();
@@ -64,4 +68,14 @@ public class ConstructionInput extends InputAdapter {
 			mode.getCurrentObject().setColor(Color.RED);
 		return false;
 	}
+	
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer){
+		if(mode.constructionIsValid())
+			mode.getCurrentObject().setColor(Color.GREEN);
+		else
+			mode.getCurrentObject().setColor(Color.RED);
+		return false;
+	}
+	
 }

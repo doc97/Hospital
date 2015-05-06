@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.tint.hospital.rooms.Room;
+import com.tint.hospital.rooms.RoomType;
+import com.tint.hospital.utils.LoggingSystem;
 
 public class Building {
 	public class RoomPathData implements Comparable<RoomPathData> {
@@ -64,6 +66,39 @@ public class Building {
 
 	public List<RoomPathData> getRooms() {
 		return rooms;
+	}
+	
+	public void removeRoom(Room room){
+		if (room == null)
+			return;
+		if (rooms.size() > 1){
+			Room under = getRoomAt(room.x, room.y - 1);
+			Room top = null;
+			for (int i = 0; i < room.type.width; i++){
+				top = getRoomAt(room.x + i, room.y + 1);
+				if (top != null)
+					break;
+			}
+			
+			if (top != null){
+				LoggingSystem.log("Building", "Cannot remove " + room.type.toString());
+				return;
+			}	
+			if (room.type == RoomType.STAIRS_TOP && under.type != RoomType.STAIRS_BOTTOM){
+				under.changeType(RoomType.STAIRS_TOP);
+			}
+			if (room.y == 0){
+				if (getRoomAt(room.x - 1, room.y) != null && getRoomAt(room.x + room.type.width, room.y) != null){
+					LoggingSystem.log("Building", "Cannot remove " + room.type.toString());
+					return;
+				}
+			}
+			rooms.remove(getRoomData(room));
+			Root.INSTANCE.economySystem.addMoney(room.type.cost / 2);
+			Root.INSTANCE.renderSystem.removeObject(room.renderObject, 2);
+		} else {
+			LoggingSystem.log("Building", "Cannot remove " + room.type.toString());
+		}
 	}
 	
 	public void resetBuilding(){

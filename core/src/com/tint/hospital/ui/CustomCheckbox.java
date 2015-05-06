@@ -1,15 +1,13 @@
 package com.tint.hospital.ui;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
@@ -64,8 +62,15 @@ public class CustomCheckbox extends Button{
 	}
 	
 	public void draw(Batch batch, float parentAlpha){
+		Color c;
+		if (isChecked()){
+			c = Color.RED;
+			setColor(c.r,c.g,c.b, parentAlpha);
+		} else {
+			c = Color.WHITE;
+			setColor(c.r,c.g,c.b, parentAlpha);
+		}
 		validate();
-		
 		super.draw(batch, parentAlpha);
 	}
 

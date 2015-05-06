@@ -174,6 +174,7 @@ public class ConstructionMode {
 		return new Room(currentType, currentX, currentY);
 	}
 	
+	public RoomType getCurrentType() { return currentType; }
 	public TintedRenderObject getCurrentObject() { return currentRenderObject; }
 	public boolean isActive() { return active; }
 }

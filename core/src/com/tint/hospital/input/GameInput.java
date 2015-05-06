@@ -60,10 +60,9 @@ public class GameInput extends InputAdapter {
 	
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		if(touchBtn == Buttons.MIDDLE) {
+		if(touchBtn == Buttons.LEFT) {
 			Vector3 pos = Camera.getCamera().unproject(new Vector3(screenX, screenY, 0));
 			Camera.addPosition(touchX - pos.x, touchY - pos.y);
-			return true;
 		}
 		return false;
 	}

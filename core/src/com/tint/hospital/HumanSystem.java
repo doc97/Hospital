@@ -19,7 +19,7 @@ public class HumanSystem {
 			human.getFSM().pushState(new PatientAi(human.getFSM()));
 			retrievePatient(human);
 			spawnTimer = 0;
-		}
+		} 
 		
 		// Update both patients and doctors
 		for(Human patient : patients)

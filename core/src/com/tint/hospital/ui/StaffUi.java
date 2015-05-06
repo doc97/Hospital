@@ -7,11 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.tint.hospital.Camera;
 import com.tint.hospital.Human;
 import com.tint.hospital.Root;
 import com.tint.hospital.ai.DoctorAi;
-import com.tint.hospital.ai.PatientAi;
 import com.tint.hospital.utils.Assets;
 
 public class StaffUi extends UiBase {
@@ -36,6 +34,16 @@ public class StaffUi extends UiBase {
 		stage.addActor(sp);
 		
 		docs = Root.INSTANCE.humanSystem.doctors.size;
+		
+		table.addActor(createTextButton("++ Hire ++", 0, 0, 0, 0, new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				Human human = new Human(0, 0);
+				human.getFSM().pushState(new DoctorAi(human.getFSM()));
+				Root.INSTANCE.humanSystem.hireDoctor(human);
+			}
+		}));
 		
 		stage.addAction(new Action() {
 			@Override
