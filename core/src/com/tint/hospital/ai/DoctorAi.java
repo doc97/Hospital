@@ -75,6 +75,7 @@ public class DoctorAi extends AiState {
 				break;
 			case TREATMENT_DONE:
 				MessageManager.getInstance().dispatchMessage(fsm.getOwner(), appointmentData.patient, TREATMENT_DONE);
+				fsm.popState();
 				break;
 			}
 		}
